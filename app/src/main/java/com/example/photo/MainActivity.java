@@ -30,6 +30,9 @@ import com.android.volley.toolbox.Volley;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private String KEY_IMAGEN = "foto";
     private String KEY_NOMBRE = "nombre";
+    private String KEY_FECHA = "fecha";
+    private String KEY_HORA = "hora";
 
 
     @Override
@@ -97,6 +102,18 @@ public class MainActivity extends AppCompatActivity {
         return encodedImage;
     }
 
+    private String getFecha() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    private String getHora(){
+        DateFormat dt = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        return dt.format(date);
+    }
+
     private void uploadImage(){
 
         //Mostrar el diálogo de progreso
@@ -115,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError volleyError) {
+                    public void onErrorResponse(VolleyError err) {
                         //Descartar el diálogo de progreso
                         loading.dismiss();
 
                         //Showing toast
-                        Toast.makeText(MainActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Error conection", Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -130,7 +147,13 @@ public class MainActivity extends AppCompatActivity {
                 String imagen = getStringImagen(bitmap);
 
                 //Obtener el nombre de la imagen
-                String nombre = "prueba";//editTextName.getText().toString().trim();
+                String nombre = "prueba";
+
+                //obtenemos la fecha
+                String fecha = getFecha();
+
+                //obtenemos la hora
+                String hora = getHora();
 
                 //Creación de parámetros
                 Map<String,String> params = new Hashtable<String, String>();
@@ -138,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
                 //Agregando de parámetros
                 params.put(KEY_IMAGEN, imagen);
                 params.put(KEY_NOMBRE, nombre);
+                params.put(KEY_FECHA, fecha);
+                params.put(KEY_HORA, hora);
 
                 //Parámetros de retorno
                 return params;
