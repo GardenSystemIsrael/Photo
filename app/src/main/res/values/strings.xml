@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Photo</string>
-    <string name="camera">Camera</string>
-    <string name="upload">Upload</string>
+    <string name="app_name">PreAsyst</string>
+    <string name="camera">Tomar foto</string>
+    <string name="upload">Enviar asistencia</string>
 </resources>
