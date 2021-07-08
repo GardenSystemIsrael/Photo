@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         //Showing toast
                         Toast.makeText(MainActivity.this, "Error conection", Toast.LENGTH_LONG).show();
                     }
-                }){
+                }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //Convertir bits a cadena
