@@ -1,19 +1,30 @@
 package com.example.photo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.SpannableString;
 import android.util.Base64;
 import android.util.Log;
@@ -47,29 +58,41 @@ public class Login extends AppCompatActivity {
 
     EditText code, pass;
     TextView msg;
-    Button btnRegistra;
+    Button btnRegistra, btnGps;
     String str_code, str_pass;
     String URL = "http://192.168.15.30/remoteapp/php/login.php";
     ImageView photo;
-    public static final  int REQUEST_CODE_PHOTO = 1;
-    private String UPLOAD_URL ="http://192.168.15.30/remoteapp/php/evento.php";
+    public static final int REQUEST_CODE_PHOTO = 1;
+    private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/php/evento.php";
     private Bitmap bitmap;
-    private String KEY_CODE = "code";
-    private String KEY_FECHA = "datetime";
-    private String KEY_HORA = "time";
-    private String KEY_IMAGEN = "photo";
-    private String KEY_UBI = "lat_long";
+    private final String KEY_CODE = "code";
+    private final String KEY_FECHA = "datetime";
+    private final String KEY_HORA = "time";
+    private final String KEY_IMAGEN = "photo";
+    private final String KEY_UBI = "lat_long";
+    LocationManager locationManager;
+    String latitud, longitud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        msg = (TextView)findViewById(R.id.lblHeadCard);
-        code = (EditText)findViewById(R.id.txtCode);
-        pass = (EditText)findViewById(R.id.txtPass);
-        btnRegistra = (Button)findViewById(R.id.btnRegistrar);
-        photo = (ImageView)findViewById(R.id.img);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        msg = (TextView) findViewById(R.id.lblHeadCard);
+        code = (EditText) findViewById(R.id.txtCode);
+        pass = (EditText) findViewById(R.id.txtPass);
+        btnRegistra = (Button) findViewById(R.id.btnRegistrar);
+        photo = (ImageView) findViewById(R.id.img);
+//        btnGps = (Button) findViewById(R.id.btnGps);
+
+//        btnGps.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                localizacion();
+//            }
+//        });
 
         btnRegistra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +101,29 @@ public class Login extends AppCompatActivity {
             }
         });
 
+    }
+
+    public String localizacion() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.INTERNET
+            }, 1000);
+        }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(locationManager!=null){
+            latitud = String.valueOf(loc.getLatitude());
+            longitud = String.valueOf(loc.getLongitude());
+        }
+            return latitud + " , " + longitud;
+    }
+
+    public void ejecutaComandos(){
+        uploadData();
+        limpiar();
     }
 
     private String getFecha() {
@@ -106,8 +152,7 @@ public class Login extends AppCompatActivity {
             Bitmap img = (Bitmap) extras.get("data");
             photo.setImageBitmap(img);
         }
-        uploadData();
-        limpiar();
+        ejecutaComandos();
     }
 
     public String getStringImagen(Bitmap bmp){
@@ -119,7 +164,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void limpiar(){
-        photo.setImageDrawable(getDrawable(R.drawable.logopre));
+//        photo.setImageDrawable(getDrawable(R.drawable.logopre));
         msg.setText("Se Registro su asistencia");
         msg.setTextColor(getColor(R.color.green));
         code.setText("");
@@ -150,7 +195,7 @@ public class Login extends AppCompatActivity {
                                 takePhoto();
 
                             } else {
-                                Toast.makeText(Login.this, s.toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
                             }
                         }
                     },
@@ -160,7 +205,7 @@ public class Login extends AppCompatActivity {
                             //Descartar el diálogo de progreso
                             progressDialog.dismiss();
                             //Showing toast
-                            Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, "Error de conexion", Toast.LENGTH_LONG).show();
                         }
                     }) {
                 @Override
@@ -195,7 +240,7 @@ public class Login extends AppCompatActivity {
                         //Descartar el diálogo de progreso
                         loading.dismiss();
                         //Mostrando el mensaje de la respuesta
-                        Toast.makeText(Login.this, s.toString() , Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
 
                     }
                 },
@@ -224,6 +269,9 @@ public class Login extends AppCompatActivity {
                 //obtenemos la hora
                 String hora = getHora();
 
+                //obtenemos localizacion
+                String lat_long = localizacion();
+
                 //Creación de parámetros
                 Map<String,String> params = new Hashtable<String, String>();
 
@@ -232,7 +280,7 @@ public class Login extends AppCompatActivity {
                 params.put(KEY_FECHA, fecha);
                 params.put(KEY_HORA, hora);
                 params.put(KEY_IMAGEN, imagen);
-                //params.put(KEY_UBI, lat_long);
+                params.put(KEY_UBI, lat_long);
 
                 //Parámetros de retorno
                 return params;

@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         app:cardUseCompatPadding="true"
@@ -99,15 +99,24 @@
                 android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/purple_200"
+                android:background="@drawable/buttontest"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:layout_marginTop="30dp"
-                android:padding="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
                 android:text="Regisrar"
                 >
 
             </Button>
+
+<!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--                android:id="@+id/btnConf"-->
+<!--                android:layout_width="73dp"-->
+<!--                android:layout_height="73dp"-->
+<!--                android:layout_marginTop="100dp"-->
+<!--                android:layout_marginLeft="290dp"-->
+<!--                android:src="@drawable/ic_baseline_settings_24"-->
+<!--                app:fabSize="normal"/>-->
 
         </LinearLayout>
 
