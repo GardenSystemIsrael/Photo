@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
@@ -57,11 +58,12 @@ import java.util.Map;
 public class Login extends AppCompatActivity {
 
     EditText code, pass;
-    TextView msg;
+    TextView msgText;
     Button btnRegistra, btnGps;
     String str_code, str_pass;
     String URL = "http://192.168.15.30/remoteapp/php/login.php";
     ImageView photo;
+    CardView msgCard;
     public static final int REQUEST_CODE_PHOTO = 1;
     private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/php/evento.php";
     private Bitmap bitmap;
@@ -80,11 +82,12 @@ public class Login extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        msg = (TextView) findViewById(R.id.lblHeadCard);
+        msgText = (TextView) findViewById(R.id.lblHeadCard);
         code = (EditText) findViewById(R.id.txtCode);
         pass = (EditText) findViewById(R.id.txtPass);
         btnRegistra = (Button) findViewById(R.id.btnRegistrar);
         photo = (ImageView) findViewById(R.id.img);
+        msgCard = (CardView) findViewById(R.id.cardMsg);
 //        btnGps = (Button) findViewById(R.id.btnGps);
 
 //        btnGps.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +127,7 @@ public class Login extends AppCompatActivity {
     public void ejecutaComandos(){
         uploadData();
         limpiar();
+        msjCardSuccess("Se registro su asistencia a las: " + getHora());
     }
 
     private String getFecha() {
@@ -141,7 +145,7 @@ public class Login extends AppCompatActivity {
     public void takePhoto(){
         Intent picture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(picture, REQUEST_CODE_PHOTO);
-
+        msjCard("Captura una selfie para asistencia");
     }
 
     @Override
@@ -151,8 +155,8 @@ public class Login extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap img = (Bitmap) extras.get("data");
             photo.setImageBitmap(img);
+            ejecutaComandos();
         }
-        ejecutaComandos();
     }
 
     public String getStringImagen(Bitmap bmp){
@@ -165,17 +169,33 @@ public class Login extends AppCompatActivity {
 
     public void limpiar(){
 //        photo.setImageDrawable(getDrawable(R.drawable.logopre));
-        msg.setText("Se Registro su asistencia");
-        msg.setTextColor(getColor(R.color.green));
         code.setText("");
         pass.setText("");
     }
 
+    public void msjCardError(String msj){
+        msgCard.setCardBackgroundColor(getColor(R.color.red_tenue));
+        msgText.setTextColor(getColor(R.color.red));
+        msgText.setText(msj);
+    }
+
+    public void msjCardSuccess(String msj){
+        msgCard.setCardBackgroundColor(getColor(R.color.green_tenue));
+        msgText.setTextColor(getColor(R.color.green));
+        msgText.setText(msj);
+    }
+
+    public void msjCard(String msj){
+        msgCard.setCardBackgroundColor(getColor(R.color.orange_tenue));
+        msgText.setTextColor(getColor(R.color.orange));
+        msgText.setText(msj);
+    }
+
     public void login(View view){
         if(code.getText().toString().equals("")){
-            Toast.makeText(this, "Ingrese el codigo", Toast.LENGTH_SHORT).show();
+            msjCard("Ingrese el codigo");
         } else if (pass.getText().toString().equals("")){
-            Toast.makeText(this, "Ingrese la contraseña", Toast.LENGTH_SHORT).show();
+            msjCard("Ingrese la contraseña");
         } else {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Un momento...");
@@ -195,7 +215,8 @@ public class Login extends AppCompatActivity {
                                 takePhoto();
 
                             } else {
-                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
+                                msjCardError("Credenciales incorrectas");
                             }
                         }
                     },
@@ -205,7 +226,7 @@ public class Login extends AppCompatActivity {
                             //Descartar el diálogo de progreso
                             progressDialog.dismiss();
                             //Showing toast
-                            Toast.makeText(Login.this, "Error de conexion", Toast.LENGTH_LONG).show();
+                            msjCardError("Error de conexion");
                         }
                     }) {
                 @Override
@@ -251,7 +272,8 @@ public class Login extends AppCompatActivity {
                         loading.dismiss();
 
                         //Showing toast
-                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
+                        msjCardError("Error de conexion");
                     }
                 }) {
             @Override
