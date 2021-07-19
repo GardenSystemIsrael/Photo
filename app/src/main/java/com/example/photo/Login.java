@@ -61,11 +61,11 @@ public class Login extends AppCompatActivity {
     TextView msgText;
     Button btnRegistra, btnGps;
     String str_code, str_pass;
-    String URL = "http://192.168.15.30/remoteapp/php/login.php";
+    String URL = "http://192.168.15.30/remoteapp/login.php";
     ImageView photo;
     CardView msgCard;
     public static final int REQUEST_CODE_PHOTO = 1;
-    private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/php/evento.php";
+    private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/evento.php";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
