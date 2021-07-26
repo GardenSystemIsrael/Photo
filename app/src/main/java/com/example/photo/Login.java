@@ -15,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,6 +32,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,13 +60,16 @@ import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
-    EditText code, pass;
+    CheckBox chkCredenciales, chkCampoExtra;
+    FloatingActionButton btnFloat;
+    EditText code, pass, campoExtra;
+    com.google.android.material.textfield.TextInputLayout materialCampo;
     TextView msgText;
     Button btnRegistra, btnGps;
     String str_code, str_pass;
     String URL = "http://192.168.15.30/remoteapp/login.php";
     ImageView photo;
-    CardView msgCard;
+    CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
     private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/evento.php";
     private Bitmap bitmap;
@@ -82,12 +88,18 @@ public class Login extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        materialCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.materialCampo);
+        chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
+        chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
         msgText = (TextView) findViewById(R.id.lblHeadCard);
         code = (EditText) findViewById(R.id.txtCode);
+        campoExtra = (EditText) findViewById(R.id.txtCampoExtra);
         pass = (EditText) findViewById(R.id.txtPass);
         btnRegistra = (Button) findViewById(R.id.btnRegistrar);
         photo = (ImageView) findViewById(R.id.img);
         msgCard = (CardView) findViewById(R.id.cardMsg);
+        cardConf = (CardView) findViewById(R.id.cardConf);
+        btnFloat = (FloatingActionButton) findViewById(R.id.btnFloat);
 //        btnGps = (Button) findViewById(R.id.btnGps);
 
 //        btnGps.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +109,44 @@ public class Login extends AppCompatActivity {
 //            }
 //        });
 
+        addPreferences();
+
+        chkCampoExtra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveCampo();
+                addCampoExtra();
+            }
+        });
+
+        chkCredenciales.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+                String user = preferences.getString("user", "");
+
+                if(user.toString().equals("")){
+                    saveCredentials();
+                    addPreferences();
+                } else {
+                    deleteCredentials();
+                }
+            }
+        });
+
+        btnFloat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cardConf.getVisibility() == View.GONE){
+                    cardConf.setVisibility(View.VISIBLE);
+                } else if (cardConf.getVisibility() == View.VISIBLE) {
+                    cardConf.setVisibility(View.GONE);
+                }
+//                Intent conf = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(conf);
+            }
+        });
+
         btnRegistra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +155,83 @@ public class Login extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    public void addCampoExtra(){
+        if (chkCampoExtra.isChecked()){
+            materialCampo.setVisibility(View.VISIBLE);
+        } else if (!chkCampoExtra.isChecked()) {
+            materialCampo.setVisibility(View.GONE);
+        }
+    }
+
+    public void deleteCredentials(){
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("credenciales");
+        editor.remove("user");
+        editor.remove("contra");
+        editor.commit();
+        limpiar();
+
+    }
+
+    public void deleteCampo(){
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("campo");
+        editor.commit();
+    }
+
+    public void addPreferences(){
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+
+        String user = preferences.getString("user", "");
+        String contra = preferences.getString("contra", "");
+        Boolean campoBool = preferences.getBoolean("campo", false);
+        Boolean credentialBool = preferences.getBoolean("credenciales", false);
+
+        code.setText(user);
+        pass.setText(contra);
+        chkCampoExtra.setChecked(campoBool);
+        chkCredenciales.setChecked(credentialBool);
+        addCampoExtra();
+    }
+
+    public void saveCredentials(){
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+
+        if(code.getText().toString().equals("") || pass.getText().toString().equals("")){
+            msjCard("Debe ingresar las credenciales");
+        } else {
+            msgCard.setVisibility(View.GONE);
+            String usuario = code.getText().toString().trim();
+            String contrasena = pass.getText().toString().trim();
+            Boolean checkCredential = chkCredenciales.isChecked();
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("user", usuario);
+            editor.putString("contra", contrasena);
+            editor.putBoolean("credenciales", checkCredential);
+            editor.commit();
+        }
+
+    }
+
+    public void saveCampo(){
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+        Boolean checkCampo = chkCampoExtra.isChecked();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("campo", checkCampo);
+        editor.commit();
+    }
+
 
     public String localizacion() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -171,21 +298,25 @@ public class Login extends AppCompatActivity {
 //        photo.setImageDrawable(getDrawable(R.drawable.logopre));
         code.setText("");
         pass.setText("");
+        msgCard.setVisibility(View.GONE);
     }
 
     public void msjCardError(String msj){
+        msgCard.setVisibility(View.VISIBLE);
         msgCard.setCardBackgroundColor(getColor(R.color.red_tenue));
         msgText.setTextColor(getColor(R.color.red));
         msgText.setText(msj);
     }
 
     public void msjCardSuccess(String msj){
+        msgCard.setVisibility(View.VISIBLE);
         msgCard.setCardBackgroundColor(getColor(R.color.green_tenue));
         msgText.setTextColor(getColor(R.color.green));
         msgText.setText(msj);
     }
 
     public void msjCard(String msj){
+        msgCard.setVisibility(View.VISIBLE);
         msgCard.setCardBackgroundColor(getColor(R.color.orange_tenue));
         msgText.setTextColor(getColor(R.color.orange));
         msgText.setText(msj);

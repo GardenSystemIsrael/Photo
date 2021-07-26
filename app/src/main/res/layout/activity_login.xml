@@ -4,13 +4,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="Login"
     android:background="@color/cardview_shadow_end_color">
 
-    <androidx.cardview.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        >
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardConf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_toStartOf="@+id/btnFloat"
+            android:elevation="4dp"
+            android:outlineAmbientShadowColor="@color/teal_200"
+            app:cardCornerRadius="5dp"
+            app:cardUseCompatPadding="true"
+            android:visibility="visible"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingRight="5dp">
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/chkCredenciales"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar credenciales">
+
+
+                </com.google.android.material.checkbox.MaterialCheckBox>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/chkCampoExtra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agregar campo extra">
+
+                </com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnFloat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="right|start"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:backgroundTint="#FF8000"
+            android:src="@drawable/settings">
+
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+    </RelativeLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         app:cardUseCompatPadding="true"
@@ -59,6 +132,7 @@
                     android:background="@drawable/buttontest"
                     app:cardCornerRadius="5dp"
                     app:cardBackgroundColor="@color/black"
+                    android:visibility="gone"
                     >
 
                     <TextView
@@ -116,6 +190,27 @@
                 </EditText>
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/materialCampo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:visibility="gone"
+                >
+
+                <EditText
+                    android:id="@+id/txtCampoExtra"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Campo extra"
+                    android:inputType="text"
+                    >
+
+                </EditText>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/btnRegistrar"
