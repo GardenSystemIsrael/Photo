@@ -27,7 +27,7 @@
             android:outlineAmbientShadowColor="@color/teal_200"
             app:cardCornerRadius="5dp"
             app:cardUseCompatPadding="true"
-            android:visibility="visible"
+            android:visibility="gone"
 
             >
 

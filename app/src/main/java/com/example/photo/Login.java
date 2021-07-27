@@ -253,7 +253,7 @@ public class Login extends AppCompatActivity {
 
     public void ejecutaComandos(){
         uploadData();
-        limpiar();
+//        limpiar();
         msjCardSuccess("Se registro su asistencia a las: " + getHora());
     }
 
@@ -296,8 +296,11 @@ public class Login extends AppCompatActivity {
 
     public void limpiar(){
 //        photo.setImageDrawable(getDrawable(R.drawable.logopre));
-        code.setText("");
-        pass.setText("");
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+        String user = preferences.getString("user", "");
+        String contra = preferences.getString("contra", "");
+        code.setText(user);
+        pass.setText(contra);
         msgCard.setVisibility(View.GONE);
     }
 
@@ -357,7 +360,7 @@ public class Login extends AppCompatActivity {
                             //Descartar el diálogo de progreso
                             progressDialog.dismiss();
                             //Showing toast
-                            msjCardError("Error de conexion");
+                            msjCardError("Error, compruebe su red");
                         }
                     }) {
                 @Override
@@ -384,7 +387,7 @@ public class Login extends AppCompatActivity {
     private void uploadData(){
 
         //Mostrar el diálogo de progreso
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploanding...","Wait please...",false,false);
+        final ProgressDialog loading = ProgressDialog.show(this,"Registrando...","por favor espere...",false,false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -392,7 +395,7 @@ public class Login extends AppCompatActivity {
                         //Descartar el diálogo de progreso
                         loading.dismiss();
                         //Mostrando el mensaje de la respuesta
-                        Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
+//                        msjCardSuccess(s.toString());
 
                     }
                 },
@@ -404,7 +407,7 @@ public class Login extends AppCompatActivity {
 
                         //Showing toast
 //                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
-                        msjCardError("Error de conexion");
+                        msjCardError("Error al registrar asistencia");
                     }
                 }) {
             @Override
@@ -429,7 +432,7 @@ public class Login extends AppCompatActivity {
                 Map<String,String> params = new Hashtable<String, String>();
 
                 //Agregando de parámetros
-                params.put(KEY_CODE, str_code);
+                params.put(KEY_CODE, str_code.toUpperCase());
                 params.put(KEY_FECHA, fecha);
                 params.put(KEY_HORA, hora);
                 params.put(KEY_IMAGEN, imagen);
