@@ -25,6 +25,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -60,6 +61,7 @@ import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
+    TextView lblfecha, lblhora, lblubi;
     CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat;
     EditText code, pass, campoExtra;
@@ -80,6 +82,8 @@ public class Login extends AppCompatActivity {
     private final String KEY_UBI = "lat_long";
     LocationManager locationManager;
     String latitud, longitud;
+    Handler handler = new Handler();
+    private final int TIEMPO = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,10 @@ public class Login extends AppCompatActivity {
         msgCard = (CardView) findViewById(R.id.cardMsg);
         cardConf = (CardView) findViewById(R.id.cardConf);
         btnFloat = (FloatingActionButton) findViewById(R.id.btnFloat);
+        lblfecha = (TextView)findViewById(R.id.lblfecha);
+        lblhora = (TextView)findViewById(R.id.lblhora);
+        lblubi = (TextView)findViewById(R.id.lblLatLong);
+
 //        btnGps = (Button) findViewById(R.id.btnGps);
 
 //        btnGps.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +168,8 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
     }
+
+
 
     public void addCampoExtra(){
         if (chkCampoExtra.isChecked()){
@@ -397,6 +407,7 @@ public class Login extends AppCompatActivity {
                         //Mostrando el mensaje de la respuesta
 //                        msjCardSuccess(s.toString());
 
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -421,12 +432,15 @@ public class Login extends AppCompatActivity {
 
                 //obtenemos la fecha
                 String fecha = getFecha();
+                lblfecha.setText(fecha.toString());
 
                 //obtenemos la hora
                 String hora = getHora();
+                lblhora.setText(hora.toString());
 
                 //obtenemos localizacion
                 String lat_long = localizacion();
+                lblubi.setText(lat_long);
 
                 //Creación de parámetros
                 Map<String,String> params = new Hashtable<String, String>();

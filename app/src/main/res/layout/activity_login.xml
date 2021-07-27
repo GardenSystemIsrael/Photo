@@ -239,4 +239,26 @@
 
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/lblfecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="hora: ">
+
+    </TextView>
+    <TextView
+        android:id="@+id/lblhora"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="fecha: ">
+
+    </TextView>
+    <TextView
+        android:id="@+id/lblLatLong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ubi: ">
+
+    </TextView>
+
 </LinearLayout>
