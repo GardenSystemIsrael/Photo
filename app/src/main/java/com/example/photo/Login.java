@@ -63,7 +63,7 @@ public class Login extends AppCompatActivity {
 
     TextView lblfecha, lblhora, lblubi;
     CheckBox chkCredenciales, chkCampoExtra;
-    FloatingActionButton btnFloat;
+    FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
     com.google.android.material.textfield.TextInputLayout materialCampo;
     TextView msgText;
@@ -82,8 +82,10 @@ public class Login extends AppCompatActivity {
     private final String KEY_UBI = "lat_long";
     LocationManager locationManager;
     String latitud, longitud;
-    Handler handler = new Handler();
+
     private final int TIEMPO = 5000;
+    Handler handle = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,7 @@ public class Login extends AppCompatActivity {
         msgCard = (CardView) findViewById(R.id.cardMsg);
         cardConf = (CardView) findViewById(R.id.cardConf);
         btnFloat = (FloatingActionButton) findViewById(R.id.btnFloat);
+
         lblfecha = (TextView)findViewById(R.id.lblfecha);
         lblhora = (TextView)findViewById(R.id.lblhora);
         lblubi = (TextView)findViewById(R.id.lblLatLong);
@@ -116,6 +119,9 @@ public class Login extends AppCompatActivity {
 //                localizacion();
 //            }
 //        });
+
+        btnFloatAyuda = (FloatingActionButton) findViewById(R.id.btnFloatAyuda);
+
 
         addPreferences();
 
@@ -150,8 +156,7 @@ public class Login extends AppCompatActivity {
                 } else if (cardConf.getVisibility() == View.VISIBLE) {
                     cardConf.setVisibility(View.GONE);
                 }
-//                Intent conf = new Intent(getApplicationContext(), MainActivity.class);
-//                startActivity(conf);
+
             }
         });
 
@@ -162,11 +167,42 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        btnFloatAyuda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent help = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(help);
+            }
+        });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+
+    public void showMessageCard(String m, String tipo){
+        switch (tipo){
+            case "E":
+                msjCardError(m);
+                break;
+            case "S":
+                msjCardSuccess(m);
+                break;
+            case "N":
+                msjCard(m);
+            break;
+        }
+        handle.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                borramsgCard();
+                //handle serviria para ejecutar la funcion cada cierto tiempo
+//                handle.postDelayed(this, 0);
+            }
+        }, TIEMPO);
     }
 
 
@@ -218,7 +254,7 @@ public class Login extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 
         if(code.getText().toString().equals("") || pass.getText().toString().equals("")){
-            msjCard("Debe ingresar las credenciales");
+            showMessageCard("Debe ingresar las credenciales", "E");
         } else {
             msgCard.setVisibility(View.GONE);
             String usuario = code.getText().toString().trim();
@@ -263,8 +299,8 @@ public class Login extends AppCompatActivity {
 
     public void ejecutaComandos(){
         uploadData();
-//        limpiar();
-        msjCardSuccess("Se registro su asistencia a las: " + getHora());
+        limpiar();
+        showMessageCard("Se registro su asistencia a las: " + getHora(), "S");
     }
 
     private String getFecha() {
@@ -282,7 +318,7 @@ public class Login extends AppCompatActivity {
     public void takePhoto(){
         Intent picture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(picture, REQUEST_CODE_PHOTO);
-        msjCard("Captura una selfie para asistencia");
+        showMessageCard("Captura una selfie para asistencia", "N");
     }
 
     @Override
@@ -304,14 +340,17 @@ public class Login extends AppCompatActivity {
         return encodedImage;
     }
 
+    public void borramsgCard(){
+        msgCard.setVisibility(View.GONE);
+    }
+
     public void limpiar(){
 //        photo.setImageDrawable(getDrawable(R.drawable.logopre));
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-        String user = preferences.getString("user", "");
-        String contra = preferences.getString("contra", "");
-        code.setText(user);
-        pass.setText(contra);
-        msgCard.setVisibility(View.GONE);
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//        String user = preferences.getString("user", "");
+//        String contra = preferences.getString("contra", "");
+        code.setText("");
+        pass.setText("");
     }
 
     public void msjCardError(String msj){
@@ -337,9 +376,9 @@ public class Login extends AppCompatActivity {
 
     public void login(View view){
         if(code.getText().toString().equals("")){
-            msjCard("Ingrese el codigo");
+            showMessageCard("Ingrese el codigo", "E");
         } else if (pass.getText().toString().equals("")){
-            msjCard("Ingrese la contraseña");
+            showMessageCard("Ingrese la contraseña", "E");
         } else {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Un momento...");
@@ -360,7 +399,7 @@ public class Login extends AppCompatActivity {
 
                             } else {
 //                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
-                                msjCardError("Credenciales incorrectas");
+                                showMessageCard("Credenciales incorrectas", "E");
                             }
                         }
                     },
@@ -370,7 +409,7 @@ public class Login extends AppCompatActivity {
                             //Descartar el diálogo de progreso
                             progressDialog.dismiss();
                             //Showing toast
-                            msjCardError("Error, compruebe su red");
+                            showMessageCard("Error, compruebe su red", "E");
                         }
                     }) {
                 @Override
@@ -395,7 +434,6 @@ public class Login extends AppCompatActivity {
 
 
     private void uploadData(){
-
         //Mostrar el diálogo de progreso
         final ProgressDialog loading = ProgressDialog.show(this,"Registrando...","por favor espere...",false,false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
@@ -418,7 +456,7 @@ public class Login extends AppCompatActivity {
 
                         //Showing toast
 //                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
-                        msjCardError("Error al registrar asistencia");
+                        showMessageCard("Error al registrar asistencia", "E");
                     }
                 }) {
             @Override

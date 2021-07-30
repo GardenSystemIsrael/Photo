@@ -1,67 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:layout_gravity="center"
-    >
+    tools:context=".MainActivity">
 
-
-    <LinearLayout
-        android:layout_width="386dp"
-        android:layout_height="619dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_gravity="center"
-        >
-
-
-        <com.google.android.material.circularreveal.cardview.CircularRevealCardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:cardUseCompatPadding="true"
-            app:cardCornerRadius="5dp"
-            android:outlineSpotShadowColor="@color/cardview_shadow_end_color"
-            >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:layout_width="wrap_content"
+        <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Guardar credenciales"
-                    android:id="@+id/chkCredenciales"
-                    >
-                    jaja
-                </com.google.android.material.checkbox.MaterialCheckBox>
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    tools:ignore="MissingConstraints">
 
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:fontFamily="sans-serif-black"
+                            android:gravity="center"
+                            android:text="@string/app_name"
+                            android:textColor="#FF8000"
+                            android:textSize="34dp"></TextView>
 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Agregar campo extra">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:gravity="center"
+                            android:text="@string/instrucciones"
+                            android:textColor="#FF5C26"
+                            android:textSize="22dp"></TextView>
 
-                </CheckBox>
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/uno"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
 
-            </LinearLayout>
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/dos"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/tres"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/cuatro"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/cinco"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/seis"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/siete"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/ocho"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="380dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="sans-serif"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="@string/nueve"
+                            android:textColor="#FF8000"
+                            android:textSize="18dp">
+
+                        </TextView>
 
 
+                </LinearLayout>
 
-        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:padding="0dp"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="0dp">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/btnRegresaLogin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:backgroundTint="#FFF"
+                            android:src="@drawable/arrow_back"
+                            app:maxImageSize="24dp">
+
+                        </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 
+                </RelativeLayout>
 
 
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

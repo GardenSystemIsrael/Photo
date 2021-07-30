@@ -2,4 +2,18 @@
     <string name="app_name">PreAsyst</string>
     <string name="camera">Tomar foto</string>
     <string name="upload">Enviar asistencia</string>
+    <string name="instrucciones">Instrucciones para tomar asistencia.</string>
+    <string name="uno">1.- Antes de utilizar la App verifique que su dispositivo cuente con conexión a internet y se encuentre activado el GPS.</string>
+    <string name="dos">2.- Ingrese su código de empleado.</string>
+    <string name="tres">3.- Ingrese su contraseña.</string>
+    <string name="cuatro">4.- Si desea que la App recuerde sus credenciales, presione el botón de configuración (botón con engrane) y active el Check de “Guardar Credenciales”.</string>
+    <string name="cinco">5.- Una vez llenados los campos presionamos el botón “Registrar”.</string>
+    <string name="seis">6.- Se abrirá la cámara del dispositivo, tendrá que tomar una Selfie.</string>
+    <string name="siete">7.- Puede cancelar la foto para tomar una nueva o la puede confirmar.</string>
+    <string name="ocho">8.- Una vez confirmada, le deberá aparecer el mensaje, Se ha registrado su asistencia.</string>
+    <string name="nueve">9.- Listo.</string>
+    <string name="title_activity_prueba">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

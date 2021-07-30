@@ -8,75 +8,14 @@
     tools:context="Login"
     android:background="@color/cardview_shadow_end_color">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        >-->
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardConf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="10dp"
-            android:layout_toStartOf="@+id/btnFloat"
-            android:elevation="4dp"
-            android:outlineAmbientShadowColor="@color/teal_200"
-            app:cardCornerRadius="5dp"
-            app:cardUseCompatPadding="true"
-            android:visibility="gone"
-
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingRight="5dp">
-
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/chkCredenciales"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guardar credenciales">
-
-
-                </com.google.android.material.checkbox.MaterialCheckBox>
-
-
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/chkCampoExtra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Agregar campo extra">
-
-                </com.google.android.material.checkbox.MaterialCheckBox>
-
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnFloat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="right|start"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:backgroundTint="#FF8000"
-            android:src="@drawable/settings">
-
-
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-
-    </RelativeLayout>
+<!--        -->
+<!--    </RelativeLayout>-->
 
 
     <androidx.cardview.widget.CardView
@@ -226,14 +165,7 @@
 
             </Button>
 
-<!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--                android:id="@+id/btnConf"-->
-<!--                android:layout_width="73dp"-->
-<!--                android:layout_height="73dp"-->
-<!--                android:layout_marginTop="100dp"-->
-<!--                android:layout_marginLeft="290dp"-->
-<!--                android:src="@drawable/ic_baseline_settings_24"-->
-<!--                app:fabSize="normal"/>-->
+
 
         </LinearLayout>
 
@@ -260,5 +192,98 @@
         android:text="ubi: ">
 
     </TextView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardConf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnFloat"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:elevation="4dp"
+            android:outlineAmbientShadowColor="@color/teal_200"
+            android:visibility="gone"
+            app:cardCornerRadius="5dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingRight="5dp">
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/chkCredenciales"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar credenciales">
+
+
+                </com.google.android.material.checkbox.MaterialCheckBox>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/chkCampoExtra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agregar campo extra">
+
+                </com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnFloat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="right|bottom"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:backgroundTint="#FF8000"
+            android:src="@drawable/settings"
+            >
+
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnFloatAyuda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="15dp"
+            android:backgroundTint="#FFF"
+            android:src="@drawable/ic_baseline_help_outline_24"
+            android:foregroundGravity="left|bottom">
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="79dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toEndOf="@+id/btnFloatAyuda"
+            android:text=" © Garden System">
+
+        </TextView>
+
+    </RelativeLayout>
 
 </LinearLayout>
