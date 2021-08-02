@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -64,9 +65,9 @@ public class Login extends AppCompatActivity {
     CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
-    com.google.android.material.textfield.TextInputLayout materialCampo;
+    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText;
-    Button btnRegistra, btnGps;
+    Button btnRegistra, btnAsistencia, btnCerrar;
     String str_code, str_pass;
     String URL = "http://192.168.15.30/remoteapp/login.php";
     ImageView photo;
@@ -79,6 +80,7 @@ public class Login extends AppCompatActivity {
     private final String KEY_HORA = "time";
     private final String KEY_IMAGEN = "photo";
     private final String KEY_UBI = "lat_long";
+    private final String KEY_DESC = "gpo_dispositivos";
     LocationManager locationManager;
     String latitud, longitud;
     private final int TIEMPO = 5000;
@@ -87,12 +89,15 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        materialCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.materialCampo);
+        matCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCampo);
+        matCode = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCode);
+        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
         chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
         chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
         msgText = (TextView) findViewById(R.id.lblHeadCard);
@@ -105,6 +110,8 @@ public class Login extends AppCompatActivity {
         cardConf = (CardView) findViewById(R.id.cardConf);
         btnFloat = (FloatingActionButton) findViewById(R.id.btnFloat);
         btnFloatAyuda = (FloatingActionButton) findViewById(R.id.btnFloatAyuda);
+        btnAsistencia = (Button)findViewById(R.id.btnAsistencia);
+        btnCerrar = (Button)findViewById(R.id.btnCerrar);
 
         addPreferences();
 
@@ -158,11 +165,77 @@ public class Login extends AppCompatActivity {
             }
         });
 
+
+        btnCerrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cerrarApp();
+            }
+        });
+
+        btnAsistencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                muestraItemsAsistencia();
+            }
+        });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    public void muestraItemsAsistencia(){
+        matCode.setVisibility(View.VISIBLE);
+        matPass.setVisibility(View.VISIBLE);
+        btnAsistencia.setVisibility(View.GONE);
+        btnCerrar.setVisibility(View.GONE);
+        btnRegistra.setVisibility(View.VISIBLE);
+        addCampoExtra();
+    }
+
+    public void cerrarApp() {
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.camera_24)
+                .setTitle("¿Desea cerrar la app?")
+                .setCancelable(false)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //esto realizara funcion como forzar detencion
+                        //android.os.Process.killProcess(android.os.Process.myPid());
+                        //se usaria finish() para mandar app a segundo plano
+                        //finish();
+                        //para cerrar app
+//                        finishAndRemoveTask();
+                         finishAffinity();
+                    }
+                }).show();
+    }
+
+    public void ocultaCamposAsistencia(){
+        matCode.setVisibility(View.GONE);
+        matPass.setVisibility(View.GONE);
+        matCampo.setVisibility(View.GONE);
+        btnAsistencia.setVisibility(View.VISIBLE);
+        btnCerrar.setVisibility(View.VISIBLE);
+        btnRegistra.setVisibility(View.GONE);
+
+    }
+
+    public void showMessageSucces(String msg){
+        msjCardSuccess(msg);
+        handle.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ocultaCamposAsistencia();
+                borramsgCard();
+                photo.setImageDrawable(getDrawable(R.drawable.logopre));
+            }
+        }, 10000);
     }
 
     public void showMessageCard(String m, String tipo){
@@ -189,12 +262,11 @@ public class Login extends AppCompatActivity {
 
 
 
-
     public void addCampoExtra(){
-        if (chkCampoExtra.isChecked()){
-            materialCampo.setVisibility(View.VISIBLE);
+        if (chkCampoExtra.isChecked() && matCode.getVisibility() == View.VISIBLE){
+            matCampo.setVisibility(View.VISIBLE);
         } else if (!chkCampoExtra.isChecked()) {
-            materialCampo.setVisibility(View.GONE);
+            matCampo.setVisibility(View.GONE);
         }
     }
 
@@ -283,7 +355,7 @@ public class Login extends AppCompatActivity {
     public void ejecutaComandos(){
         uploadData();
         limpiar();
-        showMessageCard("Se registro su asistencia a las: " + getHora(), "S");
+        showMessageSucces("Se registro su asistencia a las: " + getHora());
     }
 
     private String getFecha() {
@@ -334,6 +406,7 @@ public class Login extends AppCompatActivity {
 //        String contra = preferences.getString("contra", "");
         code.setText("");
         pass.setText("");
+        campoExtra.setText("");
     }
 
     public void msjCardError(String msj){
@@ -459,19 +532,36 @@ public class Login extends AppCompatActivity {
                 //obtenemos localizacion
                 String lat_long = localizacion();
 
+                //obtenemos grupo de dispositivos
+                String gpoDispositivos = campoExtra.getText().toString().trim();
+
+
                 //Creación de parámetros
-                Map<String,String> params = new Hashtable<String, String>();
+                Map<String, String> params = new Hashtable<String, String>();
 
-                //Agregando de parámetros
-                params.put(KEY_CODE, str_code.toUpperCase());
-                params.put(KEY_FECHA, fecha);
-                params.put(KEY_HORA, hora);
-                params.put(KEY_IMAGEN, imagen);
-                params.put(KEY_UBI, lat_long);
+                if (lat_long.equals("")) {
+                    showMessageCard("No se pudo obtener la hora", "E");
+                } else if (fecha.equals("")) {
+                    showMessageCard("No se pudo obtener la fecha", "E");
+                } else if (hora.equals("")) {
+                    showMessageCard("No se pudo obtener su ubicacion", "E");
+                } else {
 
-                //Parámetros de retorno
+                    //Agregando de parámetros
+                    params.put(KEY_CODE, str_code.toUpperCase());
+                    params.put(KEY_FECHA, fecha);
+                    params.put(KEY_HORA, hora);
+                    params.put(KEY_IMAGEN, imagen);
+                    params.put(KEY_UBI, lat_long);
+                    params.put(KEY_DESC, gpoDispositivos.toUpperCase());
+
+                    //Parámetros de retorno
+//                    return params;
+                }
+
                 return params;
             }
+
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
