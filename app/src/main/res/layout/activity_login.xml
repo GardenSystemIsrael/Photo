@@ -97,9 +97,12 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/matCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                app:startIconDrawable="@drawable/user_24"
+                android:visibility="gone"
                 >
 
                 <EditText
@@ -114,9 +117,12 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/matPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                app:startIconDrawable="@drawable/key_24"
+                android:visibility="gone"
                 >
 
                 <EditText
@@ -124,14 +130,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
-                    android:inputType="textPassword">
+                    android:inputType="textPassword"
+                    >
 
                 </EditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/materialCampo"
+                android:id="@+id/matCampo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -150,6 +157,18 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Button
+                android:id="@+id/btnAsistencia"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@drawable/buttontest"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:layout_marginTop="15dp"
+                android:text="Tomar asistencia"
+                android:drawableLeft="@drawable/camera_24"
+                >
+            </Button>
 
             <Button
                 android:id="@+id/btnRegistrar"
@@ -158,11 +177,28 @@
                 android:background="@drawable/buttontest"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:layout_marginTop="20dp"
-                android:padding="5dp"
-                android:text="Regisrar"
+                android:layout_marginTop="15dp"
+                android:text="Regisrar asistencia"
+                android:drawableEnd="@drawable/send_34"
+                android:visibility="gone"
                 >
+            </Button>
 
+            <Button
+                android:id="@+id/btnCerrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:textColor="#ff8000"
+                android:textSize="20dp"
+                android:layout_marginTop="5dp"
+                android:outlineProvider="background"
+                android:outlineAmbientShadowColor="@color/teal_700"
+                android:text="Cerrar Aplicacion"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/close_34"
+                android:drawableTint="#ff8000"
+                >
             </Button>
 
 
