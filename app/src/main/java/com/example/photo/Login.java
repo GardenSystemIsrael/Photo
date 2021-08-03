@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.SpannableString;
+import android.text.util.Linkify;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -66,9 +67,9 @@ public class Login extends AppCompatActivity {
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
     com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
-    TextView msgText;
+    TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar;
-    String str_code, str_pass;
+    String str_code, str_pass, str_campo;
     String URL = "http://192.168.15.30/remoteapp/login.php";
     ImageView photo;
     CardView msgCard, cardConf;
@@ -112,8 +113,19 @@ public class Login extends AppCompatActivity {
         btnFloatAyuda = (FloatingActionButton) findViewById(R.id.btnFloatAyuda);
         btnAsistencia = (Button)findViewById(R.id.btnAsistencia);
         btnCerrar = (Button)findViewById(R.id.btnCerrar);
+        lblPoliticas = (TextView)findViewById(R.id.lbPoliticas);
 
         addPreferences();
+
+        lblPoliticas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String link = "https://www.tuprenomina.com/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(link));
+                startActivity(i);
+            }
+        });
 
         chkCampoExtra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -442,6 +454,9 @@ public class Login extends AppCompatActivity {
 
             str_code = code.getText().toString().trim();
             str_pass = pass.getText().toString().trim();
+            //obtenemos grupo de dispositivos
+            str_campo = campoExtra.getText().toString().trim();
+
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
@@ -533,7 +548,7 @@ public class Login extends AppCompatActivity {
                 String lat_long = localizacion();
 
                 //obtenemos grupo de dispositivos
-                String gpoDispositivos = campoExtra.getText().toString().trim();
+//                String gpoDispositivos = campoExtra.getText().toString().trim();
 
 
                 //Creación de parámetros
@@ -553,7 +568,7 @@ public class Login extends AppCompatActivity {
                     params.put(KEY_HORA, hora);
                     params.put(KEY_IMAGEN, imagen);
                     params.put(KEY_UBI, lat_long);
-                    params.put(KEY_DESC, gpoDispositivos.toUpperCase());
+                    params.put(KEY_DESC, str_campo.toUpperCase());
 
                     //Parámetros de retorno
 //                    return params;

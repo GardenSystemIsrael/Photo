@@ -296,13 +296,16 @@
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <TextView
+            android:id="@+id/lbPoliticas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="79dp"
             android:layout_marginBottom="3dp"
             android:layout_toEndOf="@+id/btnFloatAyuda"
-            android:text=" © Garden System">
+            android:text=" © Garden System"
+            android:autoLink="web"
+            >
 
         </TextView>
 
