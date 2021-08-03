@@ -62,14 +62,14 @@ import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
-    TextView lblfecha, lblhora, lblubi;
+    TextView lblfecha, lblhora, lblubi, lblGrupo;
     CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
     com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText;
     Button btnRegistra, btnAsistencia, btnCerrar;
-    String str_code, str_pass;
+    String str_code, str_pass, str_grupo;
     String URL = "http://192.168.15.30/remoteapp/login.php";
     ImageView photo;
     CardView msgCard, cardConf;
@@ -115,6 +115,7 @@ public class Login extends AppCompatActivity {
         lblfecha = (TextView)findViewById(R.id.lblfecha);
         lblhora = (TextView)findViewById(R.id.lblhora);
         lblubi = (TextView)findViewById(R.id.lblLatLong);
+        lblGrupo = (TextView) findViewById(R.id.lblGrupo);
 
 //        btnGps = (Button) findViewById(R.id.btnGps);
 
@@ -459,6 +460,7 @@ public class Login extends AppCompatActivity {
 
             str_code = code.getText().toString().trim();
             str_pass = pass.getText().toString().trim();
+            str_grupo = campoExtra.getText().toString().trim();
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
@@ -554,8 +556,7 @@ public class Login extends AppCompatActivity {
                 lblubi.setText(lat_long);
 
                 //obtenemos grupo de dispositivos
-                String gpoDispositivos = campoExtra.getText().toString().trim();
-
+                lblGrupo.setText(str_grupo);
 
                 //Creación de parámetros
                 Map<String, String> params = new Hashtable<String, String>();
@@ -574,7 +575,7 @@ public class Login extends AppCompatActivity {
                     params.put(KEY_HORA, hora);
                     params.put(KEY_IMAGEN, imagen);
                     params.put(KEY_UBI, lat_long);
-                    params.put(KEY_DESC, gpoDispositivos.toUpperCase());
+                    params.put(KEY_DESC, str_grupo.toUpperCase());
 
                     //Parámetros de retorno
 //                    return params;

@@ -150,7 +150,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Campo extra"
-                    android:inputType="text"
                     >
 
                 </EditText>
@@ -225,6 +224,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ubi: ">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/lblGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="grupo: ">
 
     </TextView>
 
