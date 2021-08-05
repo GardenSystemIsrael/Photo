@@ -14,8 +14,6 @@
         android:orientation="horizontal"
         >
 
-
-
     </RelativeLayout>
 
 
@@ -111,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Code">
+                    android:hint="Codigo">
 
                 </EditText>
 
@@ -130,7 +128,7 @@
                     android:id="@+id/txtPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:hint="Contraseña"
                     android:inputType="textPassword"
                     >
 
@@ -144,13 +142,14 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:visibility="gone"
+                app:startIconDrawable="@drawable/location_24"
                 >
 
                 <EditText
                     android:id="@+id/txtCampoExtra"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Campo extra"
+                    android:hint="Grupo de dispositivos"
                     android:inputType="text"
                     >
 
@@ -179,7 +178,7 @@
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:layout_marginTop="15dp"
-                android:text="Regisrar asistencia"
+                android:text="Registrar asistencia"
                 android:drawableEnd="@drawable/send_34"
                 android:visibility="gone"
                 >
@@ -190,11 +189,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:textColor="#ff8000"
+                android:textColor="#FF5C26"
                 android:textSize="20dp"
                 android:layout_marginTop="5dp"
                 android:outlineProvider="background"
-                android:outlineAmbientShadowColor="@color/teal_700"
+                android:outlineSpotShadowColor="@color/teal_700"
                 android:text="Cerrar Aplicacion"
                 android:textAlignment="center"
                 android:drawableLeft="@drawable/close_34"
@@ -276,6 +275,7 @@
             android:layout_marginBottom="15dp"
             android:backgroundTint="#FF8000"
             android:src="@drawable/settings"
+            android:visibility="gone"
             >
 
 
@@ -300,12 +300,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="79dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toStartOf="@+id/btnFloat"
             android:layout_toEndOf="@+id/btnFloatAyuda"
-            android:text=" © Garden System"
             android:autoLink="web"
-            >
+            android:text="@string/politicas">
 
         </TextView>
 

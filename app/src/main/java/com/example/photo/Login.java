@@ -20,6 +20,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -116,6 +117,16 @@ public class Login extends AppCompatActivity {
         lblPoliticas = (TextView)findViewById(R.id.lbPoliticas);
 
         addPreferences();
+        localizacionAlternativo();
+
+        code.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus && !code.getText().equals("")){
+                    limpiar();
+                }
+            }
+        });
 
         lblPoliticas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +205,8 @@ public class Login extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -203,8 +216,9 @@ public class Login extends AppCompatActivity {
         matCode.setVisibility(View.VISIBLE);
         matPass.setVisibility(View.VISIBLE);
         btnAsistencia.setVisibility(View.GONE);
-        btnCerrar.setVisibility(View.GONE);
+//        btnCerrar.setVisibility(View.GONE);
         btnRegistra.setVisibility(View.VISIBLE);
+        btnFloat.setVisibility(View.VISIBLE);
         addCampoExtra();
     }
 
@@ -235,6 +249,7 @@ public class Login extends AppCompatActivity {
         btnAsistencia.setVisibility(View.VISIBLE);
         btnCerrar.setVisibility(View.VISIBLE);
         btnRegistra.setVisibility(View.GONE);
+        btnFloat.setVisibility(View.GONE);
 
     }
 
@@ -247,7 +262,7 @@ public class Login extends AppCompatActivity {
                 borramsgCard();
                 photo.setImageDrawable(getDrawable(R.drawable.logopre));
             }
-        }, 10000);
+        }, TIEMPO);
     }
 
     public void showMessageCard(String m, String tipo){
@@ -268,6 +283,7 @@ public class Login extends AppCompatActivity {
                 borramsgCard();
                 //handle serviria para ejecutar la funcion cada cierto tiempo
 //                handle.postDelayed(this, 0);
+                ocultaCamposAsistencia();
             }
         }, TIEMPO);
     }
@@ -362,6 +378,37 @@ public class Login extends AppCompatActivity {
             longitud = String.valueOf(loc.getLongitude());
         }
             return latitud + " , " + longitud;
+    }
+
+    public String localizacionAlternativo() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.INTERNET
+            }, 1000);
+        }
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null){
+            LocationListener locationListenerBest = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    latitud = String.valueOf(location.getLatitude());
+                    longitud = String.valueOf(location.getLongitude());
+
+                }
+            };
+            locationManager.requestLocationUpdates(provider, 2 * 20 * 1000, 10, locationListenerBest);
+
+        }
+        return latitud + " , " + longitud;
     }
 
     public void ejecutaComandos(){
@@ -545,7 +592,10 @@ public class Login extends AppCompatActivity {
                 String hora = getHora();
 
                 //obtenemos localizacion
-                String lat_long = localizacion();
+                String lat_long = latitud + ", " + longitud;
+                if(lat_long.equals("")){
+                    lat_long = localizacion();
+                }
 
                 //obtenemos grupo de dispositivos
 //                String gpoDispositivos = campoExtra.getText().toString().trim();
@@ -555,11 +605,11 @@ public class Login extends AppCompatActivity {
                 Map<String, String> params = new Hashtable<String, String>();
 
                 if (lat_long.equals("")) {
-                    showMessageCard("No se pudo obtener la hora", "E");
+                    showMessageCard("No se pudo obtener la ubicacion", "E");
                 } else if (fecha.equals("")) {
                     showMessageCard("No se pudo obtener la fecha", "E");
                 } else if (hora.equals("")) {
-                    showMessageCard("No se pudo obtener su ubicacion", "E");
+                    showMessageCard("No se pudo obtener su hora", "E");
                 } else {
 
                     //Agregando de parámetros

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PreAsyst</string>
     <string name="camera">Tomar foto</string>
+    <string name="politicas">Copyright © 2021 Garden System</string>
     <string name="upload">Enviar asistencia</string>
     <string name="instrucciones">Instrucciones para tomar asistencia.</string>
     <string name="uno">1.- Antes de utilizar la App verifique que su dispositivo cuente con conexión a internet y se encuentre activado el GPS.</string>
