@@ -71,11 +71,11 @@ public class Login extends AppCompatActivity {
     TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar;
     String str_code, str_pass, str_campo;
-    String URL = "http://192.168.15.30/remoteapp/login.php";
+    String URL = "https://www.preasystweb.com/remoteApp/login.php";
     ImageView photo;
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
-    private final String UPLOAD_URL = "http://192.168.15.30/remoteapp/evento.php";
+    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -593,7 +593,7 @@ public class Login extends AppCompatActivity {
 
                 //obtenemos localizacion
                 String lat_long = latitud + ", " + longitud;
-                if(lat_long.equals("")){
+                if(lat_long.equals("") || lat_long == null){
                     lat_long = localizacion();
                 }
 
