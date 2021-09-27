@@ -1,6 +1,10 @@
 package com.example.photo;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -15,6 +19,9 @@ import com.example.photo.databinding.ActivityPruebaBinding;
 public class Prueba extends AppCompatActivity {
 
     private ActivityPruebaBinding binding;
+
+    TextView nombre;
+    Button btnFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,20 @@ public class Prueba extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_prueba);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        nombre = (TextView) findViewById(R.id.txtNombre);
+        btnFoto = (Button) findViewById(R.id.btnFoto);
+
+        btnFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nombre.equals("")) {
+                    Toast.makeText(Prueba.this, "El nombre es necesario", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Prueba.this, "si entro", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

@@ -201,6 +201,23 @@
                 >
             </Button>
 
+            <Button
+                android:id="@+id/btnSingUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:textColor="#FF5C26"
+                android:textSize="20dp"
+                android:layout_marginTop="5dp"
+                android:outlineProvider="background"
+                android:outlineSpotShadowColor="@color/teal_700"
+                android:text="Registrarse"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/user_24"
+                android:drawableTint="#ff8000"
+                >
+            </Button>
+
 <!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 <!--                android:id="@+id/btnConf"-->
 <!--                android:layout_width="73dp"-->

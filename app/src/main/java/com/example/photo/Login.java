@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
     EditText code, pass, campoExtra;
     com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText, lblPoliticas;
-    Button btnRegistra, btnAsistencia, btnCerrar;
+    Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
     String str_code, str_pass, str_campo;
     String URL = "https://www.preasystweb.com/remoteApp/login.php";
     ImageView photo;
@@ -115,6 +115,8 @@ public class Login extends AppCompatActivity {
         btnAsistencia = (Button)findViewById(R.id.btnAsistencia);
         btnCerrar = (Button)findViewById(R.id.btnCerrar);
         lblPoliticas = (TextView)findViewById(R.id.lbPoliticas);
+
+        btnSignUp = (Button) findViewById(R.id.btnSingUp);
 
         addPreferences();
         localizacionAlternativo();
@@ -203,6 +205,14 @@ public class Login extends AppCompatActivity {
             }
         });
 
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signup = new Intent(getApplicationContext(), Prueba.class);
+                startActivity(signup);
+            }
+        });
     }
 
 
