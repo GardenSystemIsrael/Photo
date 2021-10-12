@@ -43,17 +43,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,22 +81,26 @@ public class Login extends AppCompatActivity {
     TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
     String str_code, str_pass, str_campo;
-    String URL = "https://www.preasystweb.com/remoteApp/login.php";
+//    String URL = "https://www.preasystweb.com/remoteApp/login.php"; URL de app pruebas
+    String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
     ImageView photo;
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
-    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php";
+//    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
+    private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
     private final String KEY_HORA = "time";
     private final String KEY_IMAGEN = "photo";
-    private final String KEY_UBI = "lat_long";
+    private final String KEY_LAT = "lat";
+    private final String KEY_LNG = "long";
     private final String KEY_DESC = "gpo_dispositivos";
     LocationManager locationManager;
     String latitud, longitud;
     private final int TIEMPO = 5000;
     Handler handle = new Handler();
+
 
 
     @Override
@@ -423,8 +437,6 @@ public class Login extends AppCompatActivity {
 
     public void ejecutaComandos(){
         uploadData();
-        limpiar();
-        showMessageSucces("Se registro su asistencia a las: " + getHora());
     }
 
     private String getFecha() {
@@ -469,7 +481,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void limpiar(){
-//        photo.setImageDrawable(getDrawable(R.drawable.logopre));
+        photo.setImageDrawable(getDrawable(R.drawable.logopre));
 //        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 //        String user = preferences.getString("user", "");
 //        String contra = preferences.getString("contra", "");
@@ -514,132 +526,214 @@ public class Login extends AppCompatActivity {
             //obtenemos grupo de dispositivos
             str_campo = campoExtra.getText().toString().trim();
 
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("idemployee", str_code);
+            hashMap.put("access", str_pass);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String s) {
-                            //Descartar el diálogo de progreso
-                            progressDialog.dismiss();
-                            if(s.equalsIgnoreCase("ingreso correctamente")){
-
-                                takePhoto();
-
-                            } else {
-//                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
-                                showMessageCard("Credenciales incorrectas", "E");
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError err) {
-                            //Descartar el diálogo de progreso
-                            progressDialog.dismiss();
-                            //Showing toast
-                            showMessageCard("Error, compruebe su red", "E");
-                        }
-                    }) {
+            JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(hashMap),new Response.Listener<JSONObject>() {
                 @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String,String> params = new Hashtable<String, String>();
+                public void onResponse(JSONObject response) {
+                    try {
+                        progressDialog.dismiss();
+                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
+                        String result = jsondata.getString("message");
+                        if (result.equalsIgnoreCase("Empleado inactivo")){
+                            showMessageCard(result, "E");
+                        } else if (result.equalsIgnoreCase("ingreso correctamente")){
+                            takePhoto();
+                        } else {
+                            showMessageCard(result, "E");
+                        }
 
-                    //Agregando de parámetros
-                    params.put("code", str_code);
-                    params.put("pass", str_pass);
-
-                    //Parámetros de retorno
-                    return params;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            };
-
-            RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
-            requestQueue.add(stringRequest);
-
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse (VolleyError error) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(solicitud);
         }
 
     }
 
-
-    private void uploadData(){
-        //Mostrar el diálogo de progreso
-        final ProgressDialog loading = ProgressDialog.show(this,"Registrando...","por favor espere...",false,false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Descartar el diálogo de progreso
-                        loading.dismiss();
-                        //Mostrando el mensaje de la respuesta
+//    private void uploadData(){
+//        //Mostrar el diálogo de progreso
+//        final ProgressDialog loading = ProgressDialog.show(this,"Registrando...","por favor espere...",false,false);
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String s) {
+//                        //Descartar el diálogo de progreso
+//                        loading.dismiss();
+//                        //Mostrando el mensaje de la respuesta
 //                        msjCardSuccess(s.toString());
+//
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError err) {
+//                        //Descartar el diálogo de progreso
+//                        loading.dismiss();
+//
+//                        //Showing toast
+////                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
+//                        showMessageCard("Error al registrar asistencia", "E");
+//                    }
+//                }) {
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                //Convertir bits a cadena
+//                bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
+//                String imagen = getStringImagen(bitmap);
+//
+//                //Obtener el nombre de la imagen
+//                String nombre = "prueba";
+//
+//                //obtenemos la fecha
+//                String fecha = getFecha();
+//
+//                //obtenemos la hora
+//                String hora = getHora();
+//
+//                //obtenemos localizacion
+//                String la = latitud;
+//                String lg = longitud;
+//                String lat = latitud;
+//                String lng = longitud;
+//                if(la.equals("") || la == null){
+//                    localizacion();
+//                    lat = latitud;
+//                    lng = longitud;
+//                } else {
+//                    lat = la;
+//                    lng = lg;
+//                }
+//
+//
+//                //obtenemos grupo de dispositivos
+////                String gpoDispositivos = campoExtra.getText().toString().trim();
+//
+//
+//                //Creación de parámetros
+//                Map<String, String> params = new Hashtable<String, String>();
+//
+//                if (lng.equals("")) {
+//                    showMessageCard("No se pudo obtener la ubicacion", "E");
+//                } else if (fecha.equals("")) {
+//                    showMessageCard("No se pudo obtener la fecha", "E");
+//                } else if (hora.equals("")) {
+//                    showMessageCard("No se pudo obtener su hora", "E");
+//                } else {
+//
+//                    //Agregando de parámetros
+//                    params.put(KEY_CODE, str_code.toUpperCase());
+////                    params.put(KEY_FECHA, fecha);
+////                    params.put(KEY_HORA, hora);
+//                    params.put("org_company_id", String.valueOf(1));
+//                    params.put("dg_id", String.valueOf(1));
+//                    params.put(KEY_LAT, lat);
+//                    params.put(KEY_LNG, lng);
+//                    params.put(KEY_IMAGEN, imagen);
+////                    params.put(KEY_DESC, str_campo.toUpperCase());
+//
+//                    //Parámetros de retorno
+////                    return params;
+//                }
+//
+//                return params;
+//            }
+//
+//        };
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//        requestQueue.add(stringRequest);
+//    }
 
+    private void uploadData() {
+        //Mostrar el diálogo de progreso
+        final ProgressDialog loading = ProgressDialog.show(this, "Registrando...", "por favor espere...", false, false);
+
+//        Convertir bits a cadena
+        bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
+        String imagen = getStringImagen(bitmap);
+
+        //obtenemos localizacion
+        String la = latitud;
+        String lg = longitud;
+        String lat = latitud;
+        String lng = longitud;
+        if(la.equals("") || la == null){
+            localizacion();
+            lat = latitud;
+            lng = longitud;
+        } else {
+            lat = la;
+            lng = lg;
+        }
+
+        if(lat.equalsIgnoreCase("") || lat == null){
+            showMessageCard("No se pudo obtener la ubicacion", "E");
+        } else {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("enroll_id", str_code);
+            hashMap.put("lat", lat);
+            hashMap.put("lng", lng);
+            hashMap.put("img", imagen);
+
+            JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, UPLOAD_URL, new JSONObject(hashMap), new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    loading.dismiss();
+                    try {
+                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
+                        JSONObject checkInOut = new JSONObject(jsondata.getString("paCheckInOut"));
+                        String result = jsondata.getString("message");
+                        String hora = checkInOut.getString("check_dt");
+                        String[] fecha = hora.split("T");
+                        String[] dato = fecha[1].split("\\+");
+
+                        if(result.equalsIgnoreCase("saved")){
+                            showMessageCard("Se Registro a las " + dato[0], "S");
+
+                            handle.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    borramsgCard();
+                                    //handle serviria para ejecutar la funcion cada cierto tiempo
+                                    //handle.postDelayed(this, 0);
+                                    limpiar();
+                                }
+                            }, TIEMPO);
+
+                        } else {
+                            showMessageCard(result, "E");
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        //Descartar el diálogo de progreso
-                        loading.dismiss();
 
-                        //Showing toast
-//                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
-                        showMessageCard("Error al registrar asistencia", "E");
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Convertir bits a cadena
-                bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
-                String imagen = getStringImagen(bitmap);
-
-                //Obtener el nombre de la imagen
-                String nombre = "prueba";
-
-                //obtenemos la fecha
-                String fecha = getFecha();
-
-                //obtenemos la hora
-                String hora = getHora();
-
-                //obtenemos localizacion
-                String lat_long = latitud + ", " + longitud;
-                if(lat_long.equals("") || lat_long == null){
-                    lat_long = localizacion();
                 }
-
-                //obtenemos grupo de dispositivos
-//                String gpoDispositivos = campoExtra.getText().toString().trim();
-
-
-                //Creación de parámetros
-                Map<String, String> params = new Hashtable<String, String>();
-
-                if (lat_long.equals("")) {
-                    showMessageCard("No se pudo obtener la ubicacion", "E");
-                } else if (fecha.equals("")) {
-                    showMessageCard("No se pudo obtener la fecha", "E");
-                } else if (hora.equals("")) {
-                    showMessageCard("No se pudo obtener su hora", "E");
-                } else {
-
-                    //Agregando de parámetros
-                    params.put(KEY_CODE, str_code.toUpperCase());
-                    params.put(KEY_FECHA, fecha);
-                    params.put(KEY_HORA, hora);
-                    params.put(KEY_IMAGEN, imagen);
-                    params.put(KEY_UBI, lat_long);
-                    params.put(KEY_DESC, str_campo.toUpperCase());
-
-                    //Parámetros de retorno
-//                    return params;
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    loading.dismiss();
+                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
                 }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(solicitud);
 
-                return params;
-            }
+        }
 
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+
     }
 
 
