@@ -223,8 +223,8 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signup = new Intent(getApplicationContext(), Prueba.class);
-                startActivity(signup);
+//                Intent signup = new Intent(getApplicationContext(), Prueba.class);
+//                startActivity(signup);
             }
         });
     }
@@ -527,6 +527,7 @@ public class Login extends AppCompatActivity {
             str_campo = campoExtra.getText().toString().trim();
 
             HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("apikey", "SYS-COM0-010-223");
             hashMap.put("idemployee", str_code);
             hashMap.put("access", str_pass);
 
@@ -535,11 +536,11 @@ public class Login extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     try {
                         progressDialog.dismiss();
-                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
-                        String result = jsondata.getString("message");
+//                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
+                        String result = response.getString("message");
                         if (result.equalsIgnoreCase("Empleado inactivo")){
                             showMessageCard(result, "E");
-                        } else if (result.equalsIgnoreCase("ingreso correctamente")){
+                        } else if (result.equalsIgnoreCase("Ingreso correctamente")){
                             takePhoto();
                         } else {
                             showMessageCard(result, "E");
