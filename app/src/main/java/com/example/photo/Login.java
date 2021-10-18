@@ -1,5 +1,6 @@
 package com.example.photo;
 
+import com.example.photo.Registro;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -77,10 +78,10 @@ public class Login extends AppCompatActivity {
     CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
-    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
+//    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
-    String str_code, str_pass, str_campo;
+    String str_code, str_pass, str_apikey;
 //    String URL = "https://www.preasystweb.com/remoteApp/login.php"; URL de app pruebas
     String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
     ImageView photo;
@@ -110,17 +111,17 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        matCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCampo);
-        matCode = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCode);
-        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
+//
+//        matCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCampo);
+//        matCode = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCode);
+//        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
         chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
         chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
         msgText = (TextView) findViewById(R.id.lblHeadCard);
         code = (EditText) findViewById(R.id.txtCode);
-        campoExtra = (EditText) findViewById(R.id.txtCampoExtra);
+//        campoExtra = (EditText) findViewById(R.id.txtCampoExtra);
         pass = (EditText) findViewById(R.id.txtPass);
-        btnRegistra = (Button) findViewById(R.id.btnRegistrar);
+//        btnRegistra = (Button) findViewById(R.id.btnRegistrar);
         photo = (ImageView) findViewById(R.id.img);
         msgCard = (CardView) findViewById(R.id.cardMsg);
         cardConf = (CardView) findViewById(R.id.cardConf);
@@ -132,17 +133,21 @@ public class Login extends AppCompatActivity {
 
         btnSignUp = (Button) findViewById(R.id.btnSingUp);
 
-        addPreferences();
+
         localizacionAlternativo();
 
-        code.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && !code.getText().equals("")){
-                    limpiar();
-                }
-            }
-        });
+
+
+
+//            code.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    if(hasFocus && !code.getText().equals("")){
+//                        limpiar();
+//                    }
+//                }
+//            });
+
 
         lblPoliticas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,28 +159,28 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        chkCampoExtra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveCampo();
-                addCampoExtra();
-            }
-        });
+//        chkCampoExtra.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                saveCampo();
+////                addCampoExtra();
+//            }
+//        });
 
-        chkCredenciales.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-                String user = preferences.getString("user", "");
-
-                if(user.toString().equals("")){
-                    saveCredentials();
-                    addPreferences();
-                } else {
-                    deleteCredentials();
-                }
-            }
-        });
+//        chkCredenciales.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//                String user = preferences.getString("user", "");
+//
+//                if(user.toString().equals("")){
+//                    saveCredentials();
+//                    addPreferences();
+//                } else {
+//                    deleteCredentials();
+//                }
+//            }
+//        });
 
         btnFloat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,12 +194,12 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        btnRegistra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login(v);
-            }
-        });
+//        btnRegistra.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                login(v);
+//            }
+//        });
 
         btnFloatAyuda.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +220,7 @@ public class Login extends AppCompatActivity {
         btnAsistencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                muestraItemsAsistencia();
+                takePhoto();
             }
         });
 
@@ -223,8 +228,8 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent signup = new Intent(getApplicationContext(), Prueba.class);
-//                startActivity(signup);
+                Intent signup = new Intent(getApplicationContext(), Registro.class);
+                startActivity(signup);
             }
         });
     }
@@ -234,16 +239,27 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+        str_code = preferences.getString("user", "");
+        str_apikey = preferences.getString("apikey", "");
+
+        if (str_apikey.toString().equals("")){
+            Intent signup = new Intent(getApplicationContext(), Registro.class);
+            startActivity(signup);
+        } else {
+//            Toast.makeText(this, "No esta vacio" + str_apikey.toString().trim(), Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     public void muestraItemsAsistencia(){
-        matCode.setVisibility(View.VISIBLE);
-        matPass.setVisibility(View.VISIBLE);
+//        matCode.setVisibility(View.VISIBLE);
+//        matPass.setVisibility(View.VISIBLE);
         btnAsistencia.setVisibility(View.GONE);
 //        btnCerrar.setVisibility(View.GONE);
-        btnRegistra.setVisibility(View.VISIBLE);
+//        btnRegistra.setVisibility(View.VISIBLE);
         btnFloat.setVisibility(View.VISIBLE);
-        addCampoExtra();
+//        addCampoExtra();
     }
 
     public void cerrarApp() {
@@ -266,28 +282,8 @@ public class Login extends AppCompatActivity {
                 }).show();
     }
 
-    public void ocultaCamposAsistencia(){
-        matCode.setVisibility(View.GONE);
-        matPass.setVisibility(View.GONE);
-        matCampo.setVisibility(View.GONE);
-        btnAsistencia.setVisibility(View.VISIBLE);
-        btnCerrar.setVisibility(View.VISIBLE);
-        btnRegistra.setVisibility(View.GONE);
-        btnFloat.setVisibility(View.GONE);
 
-    }
 
-    public void showMessageSucces(String msg){
-        msjCardSuccess(msg);
-        handle.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ocultaCamposAsistencia();
-                borramsgCard();
-                photo.setImageDrawable(getDrawable(R.drawable.logopre));
-            }
-        }, TIEMPO);
-    }
 
     public void showMessageCard(String m, String tipo){
         switch (tipo){
@@ -307,83 +303,86 @@ public class Login extends AppCompatActivity {
                 borramsgCard();
                 //handle serviria para ejecutar la funcion cada cierto tiempo
 //                handle.postDelayed(this, 0);
-                ocultaCamposAsistencia();
+                photo.setImageDrawable(getDrawable(R.drawable.logopre));
+
             }
         }, TIEMPO);
     }
 
 
 
-    public void addCampoExtra(){
-        if (chkCampoExtra.isChecked() && matCode.getVisibility() == View.VISIBLE){
-            matCampo.setVisibility(View.VISIBLE);
-        } else if (!chkCampoExtra.isChecked()) {
-            matCampo.setVisibility(View.GONE);
-        }
-    }
+//    public void addCampoExtra(){
+//        if (chkCampoExtra.isChecked() && matCode.getVisibility() == View.VISIBLE){
+//            matCampo.setVisibility(View.VISIBLE);
+//        } else if (!chkCampoExtra.isChecked()) {
+//            matCampo.setVisibility(View.GONE);
+//        }
+//    }
 
-    public void deleteCredentials(){
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//    public void deleteCredentials(){
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.remove("credenciales");
+//        editor.remove("user");
+//        editor.remove("contra");
+//        editor.commit();
+//        limpiar();
+//
+//    }
 
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("credenciales");
-        editor.remove("user");
-        editor.remove("contra");
-        editor.commit();
-        limpiar();
+//    public void deleteCampo(){
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.remove("campo");
+//        editor.commit();
+//    }
 
-    }
+//    public void addPreferences(){
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//
+//        String user = preferences.getString("user", "");
+//        String contra = preferences.getString("contra", "");
+//        Boolean campoBool = preferences.getBoolean("campo", false);
+//        Boolean credentialBool = preferences.getBoolean("credenciales", false);
+//
+//        code.setText(user);
+//        pass.setText(contra);
+//        chkCampoExtra.setChecked(campoBool);
+//        chkCredenciales.setChecked(credentialBool);
+//        addCampoExtra();
+//
+//    }
 
-    public void deleteCampo(){
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//    public void saveCredentials(){
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//
+//        if(code.getText().toString().equals("") || pass.getText().toString().equals("")){
+//            showMessageCard("Debe ingresar las credenciales", "E");
+//        } else {
+//            msgCard.setVisibility(View.GONE);
+//            String usuario = code.getText().toString().trim();
+//            String contrasena = pass.getText().toString().trim();
+//            Boolean checkCredential = chkCredenciales.isChecked();
+//
+//            SharedPreferences.Editor editor = preferences.edit();
+//            editor.putString("apikey", "SYSCOM");
+//            editor.putString("user", usuario);
+//            editor.putString("contra", contrasena);
+//            editor.putBoolean("credenciales", checkCredential);
+//            editor.commit();
+//        }
+//
+//    }
 
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("campo");
-        editor.commit();
-    }
-
-    public void addPreferences(){
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-
-        String user = preferences.getString("user", "");
-        String contra = preferences.getString("contra", "");
-        Boolean campoBool = preferences.getBoolean("campo", false);
-        Boolean credentialBool = preferences.getBoolean("credenciales", false);
-
-        code.setText(user);
-        pass.setText(contra);
-        chkCampoExtra.setChecked(campoBool);
-        chkCredenciales.setChecked(credentialBool);
-        addCampoExtra();
-    }
-
-    public void saveCredentials(){
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-
-        if(code.getText().toString().equals("") || pass.getText().toString().equals("")){
-            showMessageCard("Debe ingresar las credenciales", "E");
-        } else {
-            msgCard.setVisibility(View.GONE);
-            String usuario = code.getText().toString().trim();
-            String contrasena = pass.getText().toString().trim();
-            Boolean checkCredential = chkCredenciales.isChecked();
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("user", usuario);
-            editor.putString("contra", contrasena);
-            editor.putBoolean("credenciales", checkCredential);
-            editor.commit();
-        }
-
-    }
-
-    public void saveCampo(){
-        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-        Boolean checkCampo = chkCampoExtra.isChecked();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("campo", checkCampo);
-        editor.commit();
-    }
+//    public void saveCampo(){
+//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
+//        Boolean checkCampo = chkCampoExtra.isChecked();
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean("campo", checkCampo);
+//        editor.commit();
+//    }
 
 
     public String localizacion() {
@@ -439,17 +438,17 @@ public class Login extends AppCompatActivity {
         uploadData();
     }
 
-    private String getFecha() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    private String getHora(){
-        DateFormat dt = new SimpleDateFormat("HH:mm:ss");
-        Date date = new Date();
-        return dt.format(date);
-    }
+//    private String getFecha() {
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//        Date date = new Date();
+//        return dateFormat.format(date);
+//    }
+//
+//    private String getHora(){
+//        DateFormat dt = new SimpleDateFormat("HH:mm:ss");
+//        Date date = new Date();
+//        return dt.format(date);
+//    }
 
     public void takePhoto(){
         Intent picture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -480,15 +479,15 @@ public class Login extends AppCompatActivity {
         msgCard.setVisibility(View.GONE);
     }
 
-    public void limpiar(){
-        photo.setImageDrawable(getDrawable(R.drawable.logopre));
+//    public void limpiar(){
+//        photo.setImageDrawable(getDrawable(R.drawable.logopre));
 //        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 //        String user = preferences.getString("user", "");
 //        String contra = preferences.getString("contra", "");
-        code.setText("");
-        pass.setText("");
-        campoExtra.setText("");
-    }
+//        code.setText("");
+//        pass.setText("");
+//        campoExtra.setText("");
+//    }
 
     public void msjCardError(String msj){
         msgCard.setVisibility(View.VISIBLE);
@@ -510,151 +509,6 @@ public class Login extends AppCompatActivity {
         msgText.setTextColor(getColor(R.color.orange));
         msgText.setText(msj);
     }
-
-    public void login(View view){
-        if(code.getText().toString().equals("")){
-            showMessageCard("Ingrese el codigo", "E");
-        } else if (pass.getText().toString().equals("")){
-            showMessageCard("Ingrese la contraseña", "E");
-        } else {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Un momento...");
-            progressDialog.show();
-
-            str_code = code.getText().toString().trim();
-            str_pass = pass.getText().toString().trim();
-            //obtenemos grupo de dispositivos
-            str_campo = campoExtra.getText().toString().trim();
-
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("apikey", "SYS-COM0-010-223");
-            hashMap.put("idemployee", str_code);
-            hashMap.put("access", str_pass);
-
-            JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(hashMap),new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        progressDialog.dismiss();
-//                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
-                        String result = response.getString("message");
-                        if (result.equalsIgnoreCase("Empleado inactivo")){
-                            showMessageCard(result, "E");
-                        } else if (result.equalsIgnoreCase("Ingreso correctamente")){
-                            takePhoto();
-                        } else {
-                            showMessageCard(result, "E");
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse (VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
-                }
-            });
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-            requestQueue.add(solicitud);
-        }
-
-    }
-
-//    private void uploadData(){
-//        //Mostrar el diálogo de progreso
-//        final ProgressDialog loading = ProgressDialog.show(this,"Registrando...","por favor espere...",false,false);
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String s) {
-//                        //Descartar el diálogo de progreso
-//                        loading.dismiss();
-//                        //Mostrando el mensaje de la respuesta
-//                        msjCardSuccess(s.toString());
-//
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError err) {
-//                        //Descartar el diálogo de progreso
-//                        loading.dismiss();
-//
-//                        //Showing toast
-////                        Toast.makeText(Login.this, "Error conection", Toast.LENGTH_LONG).show();
-//                        showMessageCard("Error al registrar asistencia", "E");
-//                    }
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                //Convertir bits a cadena
-//                bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
-//                String imagen = getStringImagen(bitmap);
-//
-//                //Obtener el nombre de la imagen
-//                String nombre = "prueba";
-//
-//                //obtenemos la fecha
-//                String fecha = getFecha();
-//
-//                //obtenemos la hora
-//                String hora = getHora();
-//
-//                //obtenemos localizacion
-//                String la = latitud;
-//                String lg = longitud;
-//                String lat = latitud;
-//                String lng = longitud;
-//                if(la.equals("") || la == null){
-//                    localizacion();
-//                    lat = latitud;
-//                    lng = longitud;
-//                } else {
-//                    lat = la;
-//                    lng = lg;
-//                }
-//
-//
-//                //obtenemos grupo de dispositivos
-////                String gpoDispositivos = campoExtra.getText().toString().trim();
-//
-//
-//                //Creación de parámetros
-//                Map<String, String> params = new Hashtable<String, String>();
-//
-//                if (lng.equals("")) {
-//                    showMessageCard("No se pudo obtener la ubicacion", "E");
-//                } else if (fecha.equals("")) {
-//                    showMessageCard("No se pudo obtener la fecha", "E");
-//                } else if (hora.equals("")) {
-//                    showMessageCard("No se pudo obtener su hora", "E");
-//                } else {
-//
-//                    //Agregando de parámetros
-//                    params.put(KEY_CODE, str_code.toUpperCase());
-////                    params.put(KEY_FECHA, fecha);
-////                    params.put(KEY_HORA, hora);
-//                    params.put("org_company_id", String.valueOf(1));
-//                    params.put("dg_id", String.valueOf(1));
-//                    params.put(KEY_LAT, lat);
-//                    params.put(KEY_LNG, lng);
-//                    params.put(KEY_IMAGEN, imagen);
-////                    params.put(KEY_DESC, str_campo.toUpperCase());
-//
-//                    //Parámetros de retorno
-////                    return params;
-//                }
-//
-//                return params;
-//            }
-//
-//        };
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        requestQueue.add(stringRequest);
-//    }
 
     private void uploadData() {
         //Mostrar el diálogo de progreso
@@ -680,8 +534,14 @@ public class Login extends AppCompatActivity {
 
         if(lat.equalsIgnoreCase("") || lat == null){
             showMessageCard("No se pudo obtener la ubicacion", "E");
-        } else {
+            loading.dismiss();
+        } else if (str_apikey.toString().equals("")) {
+            showMessageCard("Debe registrarse", "E");
+            loading.dismiss();
+        }  else {
+
             HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("apikey", str_apikey);
             hashMap.put("enroll_id", str_code);
             hashMap.put("lat", lat);
             hashMap.put("lng", lng);
@@ -691,7 +551,6 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
 
-                    loading.dismiss();
                     try {
                         JSONObject jsondata = new JSONObject(response.getString("viewVars"));
                         JSONObject checkInOut = new JSONObject(jsondata.getString("paCheckInOut"));
@@ -703,19 +562,11 @@ public class Login extends AppCompatActivity {
                         if(result.equalsIgnoreCase("saved")){
                             showMessageCard("Se Registro a las " + dato[0], "S");
 
-                            handle.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    borramsgCard();
-                                    //handle serviria para ejecutar la funcion cada cierto tiempo
-                                    //handle.postDelayed(this, 0);
-                                    limpiar();
-                                }
-                            }, TIEMPO);
-
                         } else {
                             showMessageCard(result, "E");
                         }
+
+                        loading.dismiss();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -726,7 +577,7 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     loading.dismiss();
-                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                    showMessageCard("Error: " + error, "E");
                 }
             });
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -734,8 +585,8 @@ public class Login extends AppCompatActivity {
 
         }
 
-
     }
+
 
 
 }

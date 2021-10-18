@@ -95,67 +95,67 @@
             </RelativeLayout>
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/matCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:startIconDrawable="@drawable/user_24"
-                android:visibility="gone"
-                >
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/matCode"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                app:startIconDrawable="@drawable/user_24"-->
+<!--                android:visibility="gone"-->
+<!--                >-->
 
-                <EditText
-                    android:id="@+id/txtCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Codigo">
+<!--                <EditText-->
+<!--                    android:id="@+id/txtCode"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:ems="10"-->
+<!--                    android:hint="Codigo">-->
 
-                </EditText>
+<!--                </EditText>-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/matPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:startIconDrawable="@drawable/key_24"
-                android:visibility="gone"
-                >
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/matPass"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                app:startIconDrawable="@drawable/key_24"-->
+<!--                android:visibility="gone"-->
+<!--                >-->
 
-                <EditText
-                    android:id="@+id/txtPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    >
+<!--                <EditText-->
+<!--                    android:id="@+id/txtPass"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="Contraseña"-->
+<!--                    android:inputType="textPassword"-->
+<!--                    >-->
 
-                </EditText>
+<!--                </EditText>-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/matCampo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:visibility="gone"
-                app:startIconDrawable="@drawable/location_24"
-                >
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/matCampo"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:visibility="gone"-->
+<!--                app:startIconDrawable="@drawable/location_24"-->
+<!--                >-->
 
-                <EditText
-                    android:id="@+id/txtCampoExtra"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Grupo de dispositivos"
-                    android:inputType="text"
-                    >
+<!--                <EditText-->
+<!--                    android:id="@+id/txtCampoExtra"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="Grupo de dispositivos"-->
+<!--                    android:inputType="text"-->
+<!--                    >android:layout_marginTop="15dp"-->
 
-                </EditText>
+<!--                </EditText>-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <Button
                 android:id="@+id/btnAsistencia"
@@ -164,25 +164,24 @@
                 android:background="@drawable/buttontest"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:layout_marginTop="15dp"
                 android:text="Tomar asistencia"
                 android:drawableLeft="@drawable/camera_24"
                 >
             </Button>
 
-            <Button
-                android:id="@+id/btnRegistrar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/buttontest"
-                android:textColor="@color/white"
-                android:textSize="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Registrar asistencia"
-                android:drawableEnd="@drawable/send_34"
-                android:visibility="gone"
-                >
-            </Button>
+<!--            <Button-->
+<!--                android:id="@+id/btnRegistrar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/buttontest"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20dp"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:text="Registrar asistencia"-->
+<!--                android:drawableEnd="@drawable/send_34"-->
+<!--                android:visibility="visible"-->
+<!--                >-->
+<!--            </Button>-->
 
             <Button
                 android:id="@+id/btnCerrar"
@@ -201,22 +200,22 @@
                 >
             </Button>
 
-            <Button
-                android:id="@+id/btnSingUp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:textColor="#FF5C26"
-                android:textSize="20dp"
-                android:layout_marginTop="5dp"
-                android:outlineProvider="background"
-                android:outlineSpotShadowColor="@color/teal_700"
-                android:text="Registrarse"
-                android:textAlignment="center"
-                android:drawableLeft="@drawable/user_24"
-                android:drawableTint="#ff8000"
-                >
-            </Button>
+<!--            <Button-->
+<!--                android:id="@+id/btnSingUp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:backgroundTint="@color/white"-->
+<!--                android:textColor="#FF5C26"-->
+<!--                android:textSize="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:outlineProvider="background"-->
+<!--                android:outlineSpotShadowColor="@color/teal_700"-->
+<!--                android:text="Registrarse"-->
+<!--                android:textAlignment="center"-->
+<!--                android:drawableLeft="@drawable/user_24"-->
+<!--                android:drawableTint="#ff8000"-->
+<!--                >-->
+<!--            </Button>-->
 
 <!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 <!--                android:id="@+id/btnConf"-->
@@ -276,6 +275,19 @@
 
                 </com.google.android.material.checkbox.MaterialCheckBox>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSingUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textColor="#FF5C26"
+                    android:textSize="14dp"
+                    android:text="Configuracion"
+                    android:textAlignment="center"
+                    >
+
+                </com.google.android.material.button.MaterialButton>
+
             </LinearLayout>
 
 
@@ -292,8 +304,7 @@
             android:layout_marginBottom="15dp"
             android:backgroundTint="#FF8000"
             android:src="@drawable/settings"
-            android:visibility="gone"
-            >
+            android:visibility="visible">
 
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>

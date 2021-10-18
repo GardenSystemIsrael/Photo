@@ -27,7 +27,7 @@
         android:theme="@style/Theme.Photo"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".registro"
+            android:name=".Registro"
             android:exported="true" />
         <activity android:name=".Login">
             <intent-filter>
