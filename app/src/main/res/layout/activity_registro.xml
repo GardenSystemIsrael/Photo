@@ -104,26 +104,26 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/matPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:startIconDrawable="@drawable/lock_24"
-                android:visibility="visible"
-                >
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/matPass"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                app:startIconDrawable="@drawable/lock_24"-->
+<!--                android:visibility="visible"-->
+<!--                >-->
 
-                <EditText
-                    android:id="@+id/txtPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    >
+<!--                <EditText-->
+<!--                    android:id="@+id/txtPass"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="Contraseña"-->
+<!--                    android:inputType="textPassword"-->
+<!--                    >-->
 
-                </EditText>
+<!--                </EditText>-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/matApikey"

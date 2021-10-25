@@ -74,14 +74,16 @@ import java.util.Map;
 
 
 public class Login extends AppCompatActivity {
+    //comentamos los check que se requierian antes para guardar las credenciales
+    //tambien se comento las opciones de contrsaeña ya que ya se se pide
 
-    CheckBox chkCredenciales, chkCampoExtra;
+//    CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
 //    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
-    String str_code, str_pass, str_apikey;
+    String str_code, str_pass, str_apikey, str_luxandid;
 //    String URL = "https://www.preasystweb.com/remoteApp/login.php"; URL de app pruebas
     String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
     ImageView photo;
@@ -89,6 +91,7 @@ public class Login extends AppCompatActivity {
     public static final int REQUEST_CODE_PHOTO = 1;
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
     private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
+    private final String VERIFY_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/verifyPerson";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -115,12 +118,12 @@ public class Login extends AppCompatActivity {
 //        matCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCampo);
 //        matCode = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCode);
 //        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
-        chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
-        chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
+//        chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
+//        chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
         msgText = (TextView) findViewById(R.id.lblHeadCard);
         code = (EditText) findViewById(R.id.txtCode);
 //        campoExtra = (EditText) findViewById(R.id.txtCampoExtra);
-        pass = (EditText) findViewById(R.id.txtPass);
+//        pass = (EditText) findViewById(R.id.txtPass);
 //        btnRegistra = (Button) findViewById(R.id.btnRegistrar);
         photo = (ImageView) findViewById(R.id.img);
         msgCard = (CardView) findViewById(R.id.cardMsg);
@@ -228,6 +231,7 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cardConf.setVisibility(View.GONE);
                 Intent signup = new Intent(getApplicationContext(), Registro.class);
                 startActivity(signup);
             }
@@ -242,6 +246,7 @@ public class Login extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
         str_code = preferences.getString("user", "");
         str_apikey = preferences.getString("apikey", "");
+        str_luxandid = preferences.getString("luxandid", "");
 
         if (str_apikey.toString().equals("")){
             Intent signup = new Intent(getApplicationContext(), Registro.class);
@@ -435,7 +440,8 @@ public class Login extends AppCompatActivity {
     }
 
     public void ejecutaComandos(){
-        uploadData();
+//        uploadData();
+        verifyPerson();
     }
 
 //    private String getFecha() {
@@ -510,6 +516,52 @@ public class Login extends AppCompatActivity {
         msgText.setText(msj);
     }
 
+    private void verifyPerson() {
+        final ProgressDialog loading = ProgressDialog.show(this, "Verificando...", "por favor espere...", false, false);
+
+//        Convertir bits a cadena
+        bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
+        String imagen = getStringImagen(bitmap);
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("apikey", str_apikey);
+        map.put("luxandid", str_luxandid);
+        map.put("img", imagen);
+
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, VERIFY_URL, new JSONObject(map), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject jsondata = new JSONObject(response.getString("viewVars"));
+                    JSONObject jsonResult = new JSONObject(jsondata.getString("response"));
+                    String result = jsonResult.getString("status");
+
+                    if(result.equalsIgnoreCase("failure")){
+                        showMessageCard("Persona incorrecta", "N");
+                    } else {
+                        uploadData();
+                    }
+
+                    loading.dismiss();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                showMessageCard("Error: Verifique su conexion a internet", "E");
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jor);
+
+    }
+
     private void uploadData() {
         //Mostrar el diálogo de progreso
         final ProgressDialog loading = ProgressDialog.show(this, "Registrando...", "por favor espere...", false, false);
@@ -553,13 +605,13 @@ public class Login extends AppCompatActivity {
 
                     try {
                         JSONObject jsondata = new JSONObject(response.getString("viewVars"));
-                        JSONObject checkInOut = new JSONObject(jsondata.getString("paCheckInOut"));
                         String result = jsondata.getString("message");
-                        String hora = checkInOut.getString("check_dt");
-                        String[] fecha = hora.split("T");
-                        String[] dato = fecha[1].split("\\+");
 
                         if(result.equalsIgnoreCase("saved")){
+                            JSONObject checkInOut = new JSONObject(jsondata.getString("paCheckInOut"));
+                            String hora = checkInOut.getString("check_dt");
+                            String[] fecha = hora.split("T");
+                            String[] dato = fecha[1].split("\\+");
                             showMessageCard("Se Registro a las " + dato[0], "S");
 
                         } else {

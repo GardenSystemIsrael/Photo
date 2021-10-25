@@ -103,57 +103,57 @@
 
                         </TextView>
 
-                        <TextView
-                            android:layout_width="380dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="sans-serif"
-                            android:gravity="left"
-                            android:padding="5dp"
-                            android:text="@string/cinco"
-                            android:textColor="#FF8000"
-                            android:textSize="18dp">
+<!--                        <TextView-->
+<!--                            android:layout_width="380dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:fontFamily="sans-serif"-->
+<!--                            android:gravity="left"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:text="@string/cinco"-->
+<!--                            android:textColor="#FF8000"-->
+<!--                            android:textSize="18dp">-->
 
-                        </TextView>
+<!--                        </TextView>-->
 
-                        <TextView
-                            android:layout_width="380dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="sans-serif"
-                            android:gravity="left"
-                            android:padding="5dp"
-                            android:text="@string/seis"
-                            android:textColor="#FF8000"
-                            android:textSize="18dp">
+<!--                        <TextView-->
+<!--                            android:layout_width="380dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:fontFamily="sans-serif"-->
+<!--                            android:gravity="left"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:text="@string/seis"-->
+<!--                            android:textColor="#FF8000"-->
+<!--                            android:textSize="18dp">-->
 
-                        </TextView>
+<!--                        </TextView>-->
 
-                        <TextView
-                            android:layout_width="380dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="sans-serif"
-                            android:gravity="left"
-                            android:padding="5dp"
-                            android:text="@string/siete"
-                            android:textColor="#FF8000"
-                            android:textSize="18dp">
+<!--                        <TextView-->
+<!--                            android:layout_width="380dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:fontFamily="sans-serif"-->
+<!--                            android:gravity="left"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:text="@string/siete"-->
+<!--                            android:textColor="#FF8000"-->
+<!--                            android:textSize="18dp">-->
 
-                        </TextView>
+<!--                        </TextView>-->
 
-                        <TextView
-                            android:layout_width="380dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="sans-serif"
-                            android:gravity="left"
-                            android:padding="5dp"
-                            android:text="@string/ocho"
-                            android:textColor="#FF8000"
-                            android:textSize="18dp">
+<!--                        <TextView-->
+<!--                            android:layout_width="380dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:fontFamily="sans-serif"-->
+<!--                            android:gravity="left"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:text="@string/ocho"-->
+<!--                            android:textColor="#FF8000"-->
+<!--                            android:textSize="18dp">-->
 
-                        </TextView>
+<!--                        </TextView>-->
 
                         <TextView
                             android:layout_width="380dp"

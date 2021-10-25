@@ -29,10 +29,10 @@ import java.util.HashMap;
 
 public class Registro extends AppCompatActivity {
 
-    EditText code, pass, apikey;
+    EditText code /*, pass*/, apikey;
     TextView msgText;
     Button btnRegistra, btnBorrar;
-    String str_code, str_pass, str_apikey;
+    String str_code/*, str_pass*/, str_apikey;
     String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
     CardView msgCard;
     private final int TIEMPO = 5000;
@@ -48,7 +48,7 @@ public class Registro extends AppCompatActivity {
         btnRegistra = (Button) findViewById(R.id.btnSingUp);
         btnBorrar = (Button) findViewById(R.id.btnBorrar);
         code = (EditText) findViewById(R.id.txtCode);
-        pass = (EditText) findViewById(R.id.txtPass);
+//        pass = (EditText) findViewById(R.id.txtPass);
         apikey = (EditText) findViewById(R.id.txtApikey);
 
         addPreferences();
@@ -75,7 +75,7 @@ public class Registro extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove("credenciales");
         editor.remove("user");
-        editor.remove("contra");
+        editor.remove("luxandid");
         editor.remove("apikey");
         editor.commit();
         limpiar();
@@ -84,41 +84,43 @@ public class Registro extends AppCompatActivity {
 
     private void limpiar() {
         code.setText("");
-        pass.setText("");
+//        pass.setText("");
         apikey.setText("");
     }
 
 
-    public void saveCredentials(){
+    public void saveCredentials(String luxandid){
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 
-        if(code.getText().toString().equals("") || pass.getText().toString().equals("") || apikey.getText().toString().equals("") ){
+        if(code.getText().toString().equals("") || apikey.getText().toString().equals("") ){
             showMessageCard("Debe ingresar las credenciales", "E");
         } else {
             msgCard.setVisibility(View.GONE);
             String usuario = code.getText().toString().trim();
-            String contrasena = pass.getText().toString().trim();
+//            String contrasena = pass.getText().toString().trim();
             String llave = apikey.getText().toString().trim();
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("apikey", llave);
             editor.putString("user", usuario);
-            editor.putString("contra", contrasena);
+            editor.putString("luxandid", luxandid);
             editor.commit();
 
             showMessageCard("Credenciales guardadas", "S");
         }
     }
 
+    // metodo que muestra las credenciales en los campos de la vista previamente
+    // guardados en los sharepreferences
     public void addPreferences(){
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 
         String user = preferences.getString("user", "");
-        String contra = preferences.getString("contra", "");
+//        String contra = preferences.getString("contra", "");
         String llave = preferences.getString("apikey", "");
 
         code.setText(user);
-        pass.setText(contra);
+//        pass.setText(contra);
         apikey.setText(llave);
     }
 
@@ -172,12 +174,14 @@ public class Registro extends AppCompatActivity {
         msgText.setText(msj);
     }
 
+    // comentamos las lineas en las cuales se requeria de contraseña
+    // ahora ya no se pide la contraseña
     public void login(View view){
         if(code.getText().toString().equals("")){
             showMessageCard("Ingrese el codigo", "E");
-        } else if (pass.getText().toString().equals("")){
+        } /*else if (pass.getText().toString().equals("")){
             showMessageCard("Ingrese la contraseña", "E");
-        } else if (apikey.getText().toString().equals("")) {
+        } */else if (apikey.getText().toString().equals("")) {
             showMessageCard("Ingrese codigo de acceso", "E");
         } else {
 
@@ -186,7 +190,7 @@ public class Registro extends AppCompatActivity {
             progressDialog.show();
 
             str_code = code.getText().toString().trim();
-            str_pass = pass.getText().toString().trim();
+//            str_pass = pass.getText().toString().trim();
             str_apikey = apikey.getText().toString().trim();
             //obtenemos grupo de dispositivos
 //            str_campo = campoExtra.getText().toString().trim();
@@ -194,7 +198,7 @@ public class Registro extends AppCompatActivity {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("apikey", str_apikey);
             hashMap.put("idemployee", str_code);
-            hashMap.put("access", str_pass);
+//            hashMap.put("access", str_pass);
 
             JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(hashMap),new Response.Listener<JSONObject>() {
                 @Override
@@ -206,17 +210,23 @@ public class Registro extends AppCompatActivity {
                         if (result.equalsIgnoreCase("Empleado inactivo")){
                             showMessageCard(result, "E");
                         } else if (result.equalsIgnoreCase("Ingreso correctamente")){
-                            saveCredentials();
-                            handle.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    borramsgCard();
-                                    //handle serviria para ejecutar la funcion cada cierto tiempo
-                                    //handle.postDelayed(this, 0);
-                                    Intent login = new Intent(getApplicationContext(), Login.class);
-                                    startActivity(login);
-                                }
-                            }, TIEMPO);
+                            String luxandid = response.getString("luxandid");
+                            Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
+                            if (luxandid.equalsIgnoreCase("")){
+                               showMessageCard("Empleado aun no enrolado", "N");
+                            } else {
+                                saveCredentials(luxandid);
+                                handle.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        borramsgCard();
+                                        //handle serviria para ejecutar la funcion cada cierto tiempo
+                                        //handle.postDelayed(this, 0);
+                                        Intent login = new Intent(getApplicationContext(), Login.class);
+                                        startActivity(login);
+                                    }
+                                }, TIEMPO);
+                            }
                         } else {
                             showMessageCard(result, "E");
                         }
