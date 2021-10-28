@@ -267,6 +267,26 @@ public class Login extends AppCompatActivity {
 //        addCampoExtra();
     }
 
+    private void alertaNoIA(){
+
+       AlertDialog alerta = new AlertDialog.Builder(this).create();
+       alerta.setTitle("Mensaje de PreAsyst");
+       alerta.setMessage("por el momento no funcionan los servidores, ¿Decea tomar asistencia tradicional?");
+        alerta.setButton2("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showMessageCard("No a registrado asistencia", "N");
+            }
+        });
+        alerta.setButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                uploadData();
+            }
+        });
+        alerta.show();
+    }
+
     public void cerrarApp() {
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.camera_24)
@@ -313,81 +333,6 @@ public class Login extends AppCompatActivity {
             }
         }, TIEMPO);
     }
-
-
-
-//    public void addCampoExtra(){
-//        if (chkCampoExtra.isChecked() && matCode.getVisibility() == View.VISIBLE){
-//            matCampo.setVisibility(View.VISIBLE);
-//        } else if (!chkCampoExtra.isChecked()) {
-//            matCampo.setVisibility(View.GONE);
-//        }
-//    }
-
-//    public void deleteCredentials(){
-//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-//
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.remove("credenciales");
-//        editor.remove("user");
-//        editor.remove("contra");
-//        editor.commit();
-//        limpiar();
-//
-//    }
-
-//    public void deleteCampo(){
-//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-//
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.remove("campo");
-//        editor.commit();
-//    }
-
-//    public void addPreferences(){
-//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-//
-//        String user = preferences.getString("user", "");
-//        String contra = preferences.getString("contra", "");
-//        Boolean campoBool = preferences.getBoolean("campo", false);
-//        Boolean credentialBool = preferences.getBoolean("credenciales", false);
-//
-//        code.setText(user);
-//        pass.setText(contra);
-//        chkCampoExtra.setChecked(campoBool);
-//        chkCredenciales.setChecked(credentialBool);
-//        addCampoExtra();
-//
-//    }
-
-//    public void saveCredentials(){
-//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-//
-//        if(code.getText().toString().equals("") || pass.getText().toString().equals("")){
-//            showMessageCard("Debe ingresar las credenciales", "E");
-//        } else {
-//            msgCard.setVisibility(View.GONE);
-//            String usuario = code.getText().toString().trim();
-//            String contrasena = pass.getText().toString().trim();
-//            Boolean checkCredential = chkCredenciales.isChecked();
-//
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString("apikey", "SYSCOM");
-//            editor.putString("user", usuario);
-//            editor.putString("contra", contrasena);
-//            editor.putBoolean("credenciales", checkCredential);
-//            editor.commit();
-//        }
-//
-//    }
-
-//    public void saveCampo(){
-//        SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-//        Boolean checkCampo = chkCampoExtra.isChecked();
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putBoolean("campo", checkCampo);
-//        editor.commit();
-//    }
 
 
     public String localizacion() {
@@ -444,17 +389,6 @@ public class Login extends AppCompatActivity {
         verifyPerson();
     }
 
-//    private String getFecha() {
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        Date date = new Date();
-//        return dateFormat.format(date);
-//    }
-//
-//    private String getHora(){
-//        DateFormat dt = new SimpleDateFormat("HH:mm:ss");
-//        Date date = new Date();
-//        return dt.format(date);
-//    }
 
     public void takePhoto(){
         Intent picture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -554,8 +488,11 @@ public class Login extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 loading.dismiss();
-                showMessageCard("Error: Verifique su conexion a internet", "E");
+//                showMessageCard("Error: Verifique su conexion a internet", "E");
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                alertaNoIA();
             }
+
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jor);
@@ -611,8 +548,9 @@ public class Login extends AppCompatActivity {
                             JSONObject checkInOut = new JSONObject(jsondata.getString("paCheckInOut"));
                             String hora = checkInOut.getString("check_dt");
                             String[] fecha = hora.split("T");
-                            String[] dato = fecha[1].split("\\+");
-                            showMessageCard("Se Registro a las " + dato[0], "S");
+                            String[] dato = fecha[1].split("\\-");
+                            String timedefault = fecha[0] + " a las " + dato[0] ;
+                            showMessageCard("Se Registro el " + timedefault, "S");
 
                         } else {
                             showMessageCard(result, "E");
