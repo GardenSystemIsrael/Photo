@@ -33,7 +33,7 @@ public class Registro extends AppCompatActivity {
     TextView msgText;
     Button btnRegistra, btnBorrar;
     String str_code/*, str_pass*/, str_apikey;
-    String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
+    String URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/login";
     CardView msgCard;
     private final int TIEMPO = 5000;
     Handler handle = new Handler();
