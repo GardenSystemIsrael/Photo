@@ -85,13 +85,13 @@ public class Login extends AppCompatActivity {
     Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
     String str_code, str_pass, str_apikey, str_luxandid;
 //    String URL = "https://www.preasystweb.com/remoteApp/login.php"; URL de app pruebas
-    String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
+    String URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/login";
     ImageView photo;
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
-    private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
-    private final String VERIFY_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/verifyPerson";
+    private final String UPLOAD_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/add";
+    private final String VERIFY_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -468,13 +468,20 @@ public class Login extends AppCompatActivity {
 
                 try {
                     JSONObject jsondata = new JSONObject(response.getString("viewVars"));
-                    JSONObject jsonResult = new JSONObject(jsondata.getString("response"));
-                    String result = jsonResult.getString("status");
+                    String msj = jsondata.getString("message");
+//                    Toast.makeText(getApplicationContext(), msj, Toast.LENGTH_LONG).show();
 
-                    if(result.equalsIgnoreCase("failure")){
-                        showMessageCard("Persona incorrecta", "N");
-                    } else {
+                    if (msj.equalsIgnoreCase("no autorizado para usar ia")){
                         uploadData();
+                    } else {
+                        JSONObject jsonResult = new JSONObject(jsondata.getString("response"));
+                        String result = jsonResult.getString("status");
+
+                        if(result.equalsIgnoreCase("failure")){
+                            showMessageCard("Persona incorrecta", "N");
+                        } else {
+                            uploadData();
+                        }
                     }
 
                     loading.dismiss();
