@@ -1,4 +1,4 @@
-package com.example.photo;
+package garden.system.photo;
 
 import android.content.Context;
 

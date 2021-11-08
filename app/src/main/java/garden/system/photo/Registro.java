@@ -1,4 +1,4 @@
-package com.example.photo;
+package garden.system.photo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
