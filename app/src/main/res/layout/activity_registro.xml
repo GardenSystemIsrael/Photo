@@ -138,7 +138,7 @@
                     android:id="@+id/txtApikey"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Codigo de acceso"
+                    android:hint="Clave de acceso"
                     android:inputType="text"
                     >
 

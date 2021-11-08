@@ -182,7 +182,7 @@ public class Registro extends AppCompatActivity {
         } /*else if (pass.getText().toString().equals("")){
             showMessageCard("Ingrese la contraseña", "E");
         } */else if (apikey.getText().toString().equals("")) {
-            showMessageCard("Ingrese codigo de acceso", "E");
+            showMessageCard("Ingrese clave de acceso", "E");
         } else {
 
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -240,7 +240,7 @@ public class Registro extends AppCompatActivity {
                 public void onErrorResponse (VolleyError error) {
                     progressDialog.dismiss();
 //                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
-                    showMessageCard("Codigo incorrecto" , "N");
+                    showMessageCard("Clave de acceso invalida" , "N");
                 }
 
             });
