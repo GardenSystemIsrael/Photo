@@ -33,7 +33,7 @@ public class Registro extends AppCompatActivity {
     TextView msgText;
     Button btnRegistra, btnBorrar;
     String str_code/*, str_pass*/, str_apikey;
-    String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
+    String URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/login";
     CardView msgCard;
     private final int TIEMPO = 5000;
     Handler handle = new Handler();
@@ -207,36 +207,42 @@ public class Registro extends AppCompatActivity {
                         progressDialog.dismiss();
 //                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
 
-                        String er = response.getString("error");
-                        if (er.equalsIgnoreCase("Access denied.")){
-                            showMessageCard("Clave de acceso invalida", "E");
-                        } else {
-
-                            String result = response.getString("message");
-                            if (result.equalsIgnoreCase("Empleado inactivo")){
-                                showMessageCard(result, "E");
-                            } else if (result.equalsIgnoreCase("Ingreso correctamente")){
-                                String luxandid = response.getString("luxandid");
-                                Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
-                                if (luxandid.equalsIgnoreCase("0")){
-                                    showMessageCard("Empleado aun no enrolado", "N");
-                                } else {
-                                    saveCredentials(luxandid);
-                                    handle.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            borramsgCard();
-                                            //handle serviria para ejecutar la funcion cada cierto tiempo
-                                            //handle.postDelayed(this, 0);
-                                            Intent login = new Intent(getApplicationContext(), Login.class);
-                                            startActivity(login);
-                                        }
-                                    }, TIEMPO);
-                                }
+                        String result = response.getString("message");
+                        if (result.equalsIgnoreCase("Empleado inactivo")){
+                            showMessageCard(result, "E");
+                        } else if (result.equalsIgnoreCase("Ingreso correctamente")){
+                            String luxandid = response.getString("luxandid");
+                            Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
+                            if (luxandid.equalsIgnoreCase("0")){
+                                showMessageCard("Empleado sin IA", "N");
+                                handle.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        saveCredentials(luxandid);
+                                        handle.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Intent login = new Intent(getApplicationContext(), Login.class);
+                                                startActivity(login);
+                                            }
+                                        }, 3000);
+                                    }
+                                }, 3000);
                             } else {
-                                showMessageCard(result, "E");
+                                saveCredentials(luxandid);
+                                handle.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        borramsgCard();
+                                        //handle serviria para ejecutar la funcion cada cierto tiempo
+                                        //handle.postDelayed(this, 0);
+                                        Intent login = new Intent(getApplicationContext(), Login.class);
+                                        startActivity(login);
+                                    }
+                                }, TIEMPO);
                             }
-
+                        } else {
+                            showMessageCard(result, "E");
                         }
 
                     } catch (JSONException e) {
@@ -247,8 +253,8 @@ public class Registro extends AppCompatActivity {
                 @Override
                 public void onErrorResponse (VolleyError error) {
                     progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
-//                    showMessageCard("Clave de acceso incorrecta" , "N");
+//                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                    showMessageCard("Clave de acceso incorrecta" , "N");
                 }
 
             });

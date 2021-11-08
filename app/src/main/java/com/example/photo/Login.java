@@ -90,8 +90,8 @@ public class Login extends AppCompatActivity {
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
-    private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
-    private final String VERIFY_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/verifyPerson";
+    private final String UPLOAD_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/add";
+    private final String VERIFY_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
