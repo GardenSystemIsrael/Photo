@@ -206,29 +206,37 @@ public class Registro extends AppCompatActivity {
                     try {
                         progressDialog.dismiss();
 //                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
-                        String result = response.getString("message");
-                        if (result.equalsIgnoreCase("Empleado inactivo")){
-                            showMessageCard(result, "E");
-                        } else if (result.equalsIgnoreCase("Ingreso correctamente")){
-                            String luxandid = response.getString("luxandid");
-                            Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
-                            if (luxandid.equalsIgnoreCase("")){
-                               showMessageCard("Empleado aun no enrolado", "N");
-                            } else {
-                                saveCredentials(luxandid);
-                                handle.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        borramsgCard();
-                                        //handle serviria para ejecutar la funcion cada cierto tiempo
-                                        //handle.postDelayed(this, 0);
-                                        Intent login = new Intent(getApplicationContext(), Login.class);
-                                        startActivity(login);
-                                    }
-                                }, TIEMPO);
-                            }
+
+                        String er = response.getString("error");
+                        if (er.equalsIgnoreCase("Access denied.")){
+                            showMessageCard("Clave de acceso invalida", "E");
                         } else {
-                            showMessageCard(result, "E");
+
+                            String result = response.getString("message");
+                            if (result.equalsIgnoreCase("Empleado inactivo")){
+                                showMessageCard(result, "E");
+                            } else if (result.equalsIgnoreCase("Ingreso correctamente")){
+                                String luxandid = response.getString("luxandid");
+                                Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
+                                if (luxandid.equalsIgnoreCase("0")){
+                                    showMessageCard("Empleado aun no enrolado", "N");
+                                } else {
+                                    saveCredentials(luxandid);
+                                    handle.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            borramsgCard();
+                                            //handle serviria para ejecutar la funcion cada cierto tiempo
+                                            //handle.postDelayed(this, 0);
+                                            Intent login = new Intent(getApplicationContext(), Login.class);
+                                            startActivity(login);
+                                        }
+                                    }, TIEMPO);
+                                }
+                            } else {
+                                showMessageCard(result, "E");
+                            }
+
                         }
 
                     } catch (JSONException e) {
@@ -239,8 +247,8 @@ public class Registro extends AppCompatActivity {
                 @Override
                 public void onErrorResponse (VolleyError error) {
                     progressDialog.dismiss();
-//                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
-                    showMessageCard("Codigo incorrecto" , "N");
+                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+//                    showMessageCard("Clave de acceso incorrecta" , "N");
                 }
 
             });
