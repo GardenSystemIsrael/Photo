@@ -94,47 +94,46 @@
 
             </RelativeLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/matCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/user_24"
+                android:visibility="visible"
+                >
 
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/matCode"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="4dp"-->
-<!--                app:startIconDrawable="@drawable/user_24"-->
-<!--                android:visibility="gone"-->
-<!--                >-->
+                <EditText
+                    android:id="@+id/txtCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Codigo">
 
-<!--                <EditText-->
-<!--                    android:id="@+id/txtCode"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:ems="10"-->
-<!--                    android:hint="Codigo">-->
+                </EditText>
 
-<!--                </EditText>-->
+            </com.google.android.material.textfield.TextInputLayout>
 
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/matPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:startIconDrawable="@drawable/key_24"
+                android:visibility="gone"
+                >
 
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/matPass"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="4dp"-->
-<!--                app:startIconDrawable="@drawable/key_24"-->
-<!--                android:visibility="gone"-->
-<!--                >-->
+                <EditText
+                    android:id="@+id/txtPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    >
 
-<!--                <EditText-->
-<!--                    android:id="@+id/txtPass"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:hint="Contraseña"-->
-<!--                    android:inputType="textPassword"-->
-<!--                    >-->
+                </EditText>
 
-<!--                </EditText>-->
-
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
+            </com.google.android.material.textfield.TextInputLayout>
 
 <!--            <com.google.android.material.textfield.TextInputLayout-->
 <!--                android:id="@+id/matCampo"-->

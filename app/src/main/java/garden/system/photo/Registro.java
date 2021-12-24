@@ -33,7 +33,7 @@ public class Registro extends AppCompatActivity {
     TextView msgText;
     Button btnRegistra, btnBorrar;
     String str_code/*, str_pass*/, str_apikey;
-    String URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/login";
+    String URL = "http://192.168.15.30/remoterest/PaCheckInOuts/login";
     CardView msgCard;
     private final int TIEMPO = 5000;
     Handler handle = new Handler();
@@ -47,7 +47,7 @@ public class Registro extends AppCompatActivity {
         msgText = (TextView) findViewById(R.id.lblHeadCard);
         btnRegistra = (Button) findViewById(R.id.btnSingUp);
         btnBorrar = (Button) findViewById(R.id.btnBorrar);
-        code = (EditText) findViewById(R.id.txtCode);
+//        code = (EditText) findViewById(R.id.txtCode);
 //        pass = (EditText) findViewById(R.id.txtPass);
         apikey = (EditText) findViewById(R.id.txtApikey);
 
@@ -83,27 +83,27 @@ public class Registro extends AppCompatActivity {
     }
 
     private void limpiar() {
-        code.setText("");
+//        code.setText("");
 //        pass.setText("");
         apikey.setText("");
     }
 
 
-    public void saveCredentials(String luxandid){
+    public void saveCredentials(/*String luxandid*/){
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 
-        if(code.getText().toString().equals("") || apikey.getText().toString().equals("") ){
-            showMessageCard("Debe ingresar las credenciales", "E");
+        if(/*code.getText().toString().equals("") ||*/ apikey.getText().toString().equals("") ){
+            showMessageCard("Debe ingresar la clave de acceso", "E");
         } else {
             msgCard.setVisibility(View.GONE);
-            String usuario = code.getText().toString().trim();
+//            String usuario = code.getText().toString().trim();
 //            String contrasena = pass.getText().toString().trim();
             String llave = apikey.getText().toString().trim();
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("apikey", llave);
-            editor.putString("user", usuario);
-            editor.putString("luxandid", luxandid);
+//            editor.putString("user", usuario);
+//            editor.putString("luxandid", luxandid);
             editor.commit();
 
             showMessageCard("Credenciales guardadas", "S");
@@ -115,24 +115,24 @@ public class Registro extends AppCompatActivity {
     public void addPreferences(){
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
 
-        String user = preferences.getString("user", "");
+//        String user = preferences.getString("user", "");
 //        String contra = preferences.getString("contra", "");
         String llave = preferences.getString("apikey", "");
 
-        code.setText(user);
+//        code.setText(user);
 //        pass.setText(contra);
         apikey.setText(llave);
     }
 
     public void showMessageCard(String m, String tipo){
         switch (tipo){
-            case "E":
+            case "E": // error
                 msjCardError(m);
                 break;
-            case "S":
+            case "S": // success
                 msjCardSuccess(m);
                 break;
-            case "N":
+            case "N": // normal : amarillo
                 msjCard(m);
                 break;
         }
@@ -177,19 +177,19 @@ public class Registro extends AppCompatActivity {
     // comentamos las lineas en las cuales se requeria de contraseña
     // ahora ya no se pide la contraseña
     public void login(View view){
-        if(code.getText().toString().equals("")){
-            showMessageCard("Ingrese el codigo", "E");
+        if(apikey.getText().toString().equals("")){
+            showMessageCard("Ingrese la clave", "E");
         } /*else if (pass.getText().toString().equals("")){
             showMessageCard("Ingrese la contraseña", "E");
-        } */else if (apikey.getText().toString().equals("")) {
+        } else if (code.getText().toString().equals("")) {
             showMessageCard("Ingrese clave de acceso", "E");
-        } else {
+        } */else {
 
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Un momento...");
             progressDialog.show();
 
-            str_code = code.getText().toString().trim();
+//            str_code = code.getText().toString().trim();
 //            str_pass = pass.getText().toString().trim();
             str_apikey = apikey.getText().toString().trim();
             //obtenemos grupo de dispositivos
@@ -197,7 +197,7 @@ public class Registro extends AppCompatActivity {
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("apikey", str_apikey);
-            hashMap.put("idemployee", str_code);
+//            hashMap.put("idemployee", str_code);
 //            hashMap.put("access", str_pass);
 
             JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(hashMap),new Response.Listener<JSONObject>() {
@@ -207,28 +207,23 @@ public class Registro extends AppCompatActivity {
                         progressDialog.dismiss();
 //                        JSONObject jsondata = new JSONObject(response.getString("viewVars"));
                         String result = response.getString("message");
-                        if (result.equalsIgnoreCase("Empleado inactivo")){
-                            showMessageCard(result, "E");
-                        } else if (result.equalsIgnoreCase("Ingreso correctamente")){
-                            String luxandid = response.getString("luxandid");
-                            Toast.makeText(getApplicationContext(), luxandid, Toast.LENGTH_SHORT).show();
-                            if (luxandid.equalsIgnoreCase("")){
-                               showMessageCard("Empleado aun no enrolado", "N");
-                            } else {
-                                saveCredentials(luxandid);
-                                handle.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        borramsgCard();
-                                        //handle serviria para ejecutar la funcion cada cierto tiempo
-                                        //handle.postDelayed(this, 0);
-                                        Intent login = new Intent(getApplicationContext(), Login.class);
-                                        startActivity(login);
-                                    }
-                                }, TIEMPO);
-                            }
-                        } else {
-                            showMessageCard(result, "E");
+                        if (result.equalsIgnoreCase("Access denied.") || result.equalsIgnoreCase("no existe cliente")){
+                            showMessageCard("Clave inexistente.", "N");
+                        } else if (result.equalsIgnoreCase("cliente inactivo")) {
+                            showMessageCard("Clave inactiva.", "N");
+                        } else if (result.equalsIgnoreCase("success")) {
+
+                            saveCredentials();
+                            handle.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    borramsgCard();
+                                    //handle serviria para ejecutar la funcion cada cierto tiempo
+                                    //handle.postDelayed(this, 0);
+                                    Intent login = new Intent(getApplicationContext(), Login.class);
+                                    startActivity(login);
+                                }
+                            }, TIEMPO);
                         }
 
                     } catch (JSONException e) {
@@ -241,6 +236,7 @@ public class Registro extends AppCompatActivity {
                     progressDialog.dismiss();
 //                    Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_LONG).show();
                     showMessageCard("Clave de acceso invalida" , "N");
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                 }
 
             });

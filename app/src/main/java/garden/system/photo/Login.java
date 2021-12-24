@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -55,7 +56,7 @@ public class Login extends AppCompatActivity {
 //    CheckBox chkCredenciales, chkCampoExtra;
     FloatingActionButton btnFloat, btnFloatAyuda;
     EditText code, pass, campoExtra;
-//    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
+    com.google.android.material.textfield.TextInputLayout matCampo, matCode, matPass;
     TextView msgText, lblPoliticas;
     Button btnRegistra, btnAsistencia, btnCerrar, btnSignUp;
     String str_code, str_pass, str_apikey, str_luxandid;
@@ -65,8 +66,8 @@ public class Login extends AppCompatActivity {
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
-    private final String UPLOAD_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/add";
-    private final String VERIFY_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
+    private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
+    private final String VERIFY_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/verifyPerson";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -84,7 +85,7 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // para que no gire el celula
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -92,13 +93,13 @@ public class Login extends AppCompatActivity {
 //
 //        matCampo = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCampo);
 //        matCode = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matCode);
-//        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
+        matPass = (com.google.android.material.textfield.TextInputLayout) findViewById(R.id.matPass);
 //        chkCredenciales = (CheckBox) findViewById(R.id.chkCredenciales);
 //        chkCampoExtra = (CheckBox) findViewById(R.id.chkCampoExtra);
         msgText = (TextView) findViewById(R.id.lblHeadCard);
         code = (EditText) findViewById(R.id.txtCode);
 //        campoExtra = (EditText) findViewById(R.id.txtCampoExtra);
-//        pass = (EditText) findViewById(R.id.txtPass);
+        pass = (EditText) findViewById(R.id.txtPass);
 //        btnRegistra = (Button) findViewById(R.id.btnRegistrar);
         photo = (ImageView) findViewById(R.id.img);
         msgCard = (CardView) findViewById(R.id.cardMsg);
@@ -198,7 +199,12 @@ public class Login extends AppCompatActivity {
         btnAsistencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto();
+                if(code.getText().toString().equals("")){
+                    showMessageCard("Ingrese el codigo", "N");
+                } else {
+                    str_code = code.getText().toString();
+                    takePhoto();
+                }
             }
         });
 
@@ -219,9 +225,9 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         SharedPreferences preferences = getSharedPreferences("credentials", Context.MODE_PRIVATE);
-        str_code = preferences.getString("user", "");
+//        str_code = preferences.getString("user", "");
         str_apikey = preferences.getString("apikey", "");
-        str_luxandid = preferences.getString("luxandid", "");
+//        str_luxandid = preferences.getString("luxandid", "");
 
         if (str_apikey.toString().equals("")){
             Intent signup = new Intent(getApplicationContext(), Registro.class);
@@ -434,8 +440,9 @@ public class Login extends AppCompatActivity {
 
         HashMap<String,String> map = new HashMap<>();
         map.put("apikey", str_apikey);
-        map.put("luxandid", str_luxandid);
+        map.put("enroll_id", str_code);
         map.put("img", imagen);
+
 
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, VERIFY_URL, new JSONObject(map), new Response.Listener<JSONObject>() {
             @Override
@@ -446,8 +453,22 @@ public class Login extends AppCompatActivity {
                     String msj = jsondata.getString("message");
 //                    Toast.makeText(getApplicationContext(), msj, Toast.LENGTH_LONG).show();
 
-                    if (msj.equalsIgnoreCase("no autorizado para usar ia")){
-                        uploadData();
+                    if (msj.equalsIgnoreCase("empleado inactivo")){
+                        showMessageCard("Empleado inactivo", "E");
+                    } else if (msj.equalsIgnoreCase("no autorizado para usar ia")) {
+//                        uploadData();
+                        if(matPass.getVisibility() == View.GONE){
+                            showMessageCard("Ingrese contraseña", "N");
+                            matPass.setVisibility(View.VISIBLE);
+                        } else {
+                            if (code.getText().toString().equals("")){
+                                showMessageCard("Ingrese contraseña", "N");
+                            } else {
+                                uploadData();
+                            }
+                        }
+                    } else if (msj.equalsIgnoreCase("Numero de empleado no registrado")) {
+                        showMessageCard(msj, "E");
                     } else {
                         JSONObject jsonResult = new JSONObject(jsondata.getString("response"));
                         String result = jsonResult.getString("status");
@@ -471,7 +492,7 @@ public class Login extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 loading.dismiss();
 //                showMessageCard("Error: Verifique su conexion a internet", "E");
-//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                 alertaNoIA();
             }
 
@@ -482,6 +503,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void uploadData() {
+
         //Mostrar el diálogo de progreso
         final ProgressDialog loading = ProgressDialog.show(this, "Registrando...", "por favor espere...", false, false);
 
@@ -512,11 +534,21 @@ public class Login extends AppCompatActivity {
         }  else {
 
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("apikey", str_apikey);
-            hashMap.put("enroll_id", str_code);
-            hashMap.put("lat", lat);
-            hashMap.put("lng", lng);
-            hashMap.put("img", imagen);
+            if(pass.getText().toString().equals("")){
+                hashMap.put("apikey", str_apikey);
+                hashMap.put("enroll_id", str_code);
+                hashMap.put("lat", lat);
+                hashMap.put("lng", lng);
+                hashMap.put("img", imagen);
+            } else {
+                str_pass = pass.getText().toString().trim();
+                hashMap.put("apikey", str_apikey);
+                hashMap.put("enroll_id", str_code);
+                hashMap.put("pass", str_pass);
+                hashMap.put("lat", lat);
+                hashMap.put("lng", lng);
+                hashMap.put("img", imagen);
+            }
 
             JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, UPLOAD_URL, new JSONObject(hashMap), new Response.Listener<JSONObject>() {
                 @Override
@@ -533,8 +565,14 @@ public class Login extends AppCompatActivity {
                             String[] dato = fecha[1].split("\\-");
                             String timedefault = fecha[0] + " a las " + dato[0] ;
                             showMessageCard("Se Registro el " + timedefault, "S");
+                            matPass.setVisibility(View.GONE);
+                            pass.setText("");
+                            str_pass = "";
 
                         } else {
+                            pass.setText("");
+                            str_pass = "";
+//                            Toast.makeText(getApplicationContext(), jsondata.toString(), Toast.LENGTH_SHORT).show();
                             showMessageCard(result, "E");
                         }
 
