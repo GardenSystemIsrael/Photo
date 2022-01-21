@@ -1,4 +1,4 @@
-package garden.system.photo;
+package garden.systrem.photo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,8 +66,9 @@ public class Login extends AppCompatActivity {
     CardView msgCard, cardConf;
     public static final int REQUEST_CODE_PHOTO = 1;
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
-    private final String UPLOAD_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/add";
-    private final String VERIFY_URL = "http://192.168.15.30/remoterest/PaCheckInOuts/verifyPerson";
+//    private final String UPLOAD_URL = "http://192.168.1.31/remoterest/PaCheckInOuts/add";
+    private final String UPLOAD_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/add";
+    private final String VERIFY_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -202,8 +203,18 @@ public class Login extends AppCompatActivity {
                 if(code.getText().toString().equals("")){
                     showMessageCard("Ingrese el codigo", "N");
                 } else {
-                    str_code = code.getText().toString();
-                    takePhoto();
+                    if (matPass.getVisibility() == View.VISIBLE){
+                        if (pass.getText().toString().equals((""))){
+                            showMessageCard("Ingrese contraseña", "N");
+                        } else {
+                            str_code = code.getText().toString();
+                            str_pass = pass.getText().toString();
+                            takePhoto();
+                        }
+                    } else {
+                        str_code = code.getText().toString();
+                        takePhoto();
+                    }
                 }
             }
         });
@@ -456,19 +467,17 @@ public class Login extends AppCompatActivity {
                     if (msj.equalsIgnoreCase("empleado inactivo")){
                         showMessageCard("Empleado inactivo", "E");
                     } else if (msj.equalsIgnoreCase("no autorizado para usar ia")) {
-//                        uploadData();
+
                         if(matPass.getVisibility() == View.GONE){
                             showMessageCard("Ingrese contraseña", "N");
                             matPass.setVisibility(View.VISIBLE);
                         } else {
-                            if (code.getText().toString().equals("")){
-                                showMessageCard("Ingrese contraseña", "N");
-                            } else {
-                                uploadData();
-                            }
+                            uploadData();
                         }
                     } else if (msj.equalsIgnoreCase("Numero de empleado no registrado")) {
                         showMessageCard(msj, "E");
+                    } else if (msj.equalsIgnoreCase("error")) {
+                        alertaNoIA();
                     } else {
                         JSONObject jsonResult = new JSONObject(jsondata.getString("response"));
                         String result = jsonResult.getString("status");
@@ -493,7 +502,7 @@ public class Login extends AppCompatActivity {
                 loading.dismiss();
 //                showMessageCard("Error: Verifique su conexion a internet", "E");
                 Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                alertaNoIA();
+//                alertaNoIA();
             }
 
         });

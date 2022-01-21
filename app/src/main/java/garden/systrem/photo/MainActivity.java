@@ -1,4 +1,4 @@
-package garden.system.photo;
+package garden.systrem.photo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
