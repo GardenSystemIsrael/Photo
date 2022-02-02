@@ -68,7 +68,8 @@ public class Login extends AppCompatActivity {
 //    private final String UPLOAD_URL = "https://www.preasystweb.com/remoteApp/evento.php"; URL de app pruebas
 //    private final String UPLOAD_URL = "http://192.168.1.31/remoterest/PaCheckInOuts/add";
     private final String UPLOAD_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/add";
-    private final String VERIFY_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
+    private final String VERIFY_PERSON_URL = "https://www.preasystweb.com/remoterest/PaCheckInOuts/verifyPerson";
+    private final String VERIFY_IA = "http://192.168.1.31/remoterest/PaCheckInOuts/verifyIa";
     private Bitmap bitmap;
     private final String KEY_CODE = "code";
     private final String KEY_FECHA = "datetime";
@@ -210,10 +211,12 @@ public class Login extends AppCompatActivity {
                             str_code = code.getText().toString();
                             str_pass = pass.getText().toString();
                             takePhoto();
+                            //verifyIa();
                         }
                     } else {
                         str_code = code.getText().toString();
-                        takePhoto();
+                        //takePhoto();
+                        verifyIa();
                     }
                 }
             }
@@ -385,7 +388,7 @@ public class Login extends AppCompatActivity {
     public void takePhoto(){
         Intent picture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(picture, REQUEST_CODE_PHOTO);
-        showMessageCard("Captura una selfie para asistencia", "N");
+        //showMessageCard("Captura una selfie para asistencia", "N");
     }
 
     @Override
@@ -455,7 +458,7 @@ public class Login extends AppCompatActivity {
         map.put("img", imagen);
 
 
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, VERIFY_URL, new JSONObject(map), new Response.Listener<JSONObject>() {
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, VERIFY_PERSON_URL, new JSONObject(map), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -464,17 +467,9 @@ public class Login extends AppCompatActivity {
                     String msj = jsondata.getString("message");
 //                    Toast.makeText(getApplicationContext(), msj, Toast.LENGTH_LONG).show();
 
-                    if (msj.equalsIgnoreCase("empleado inactivo")){
-                        showMessageCard("Empleado inactivo", "E");
-                    } else if (msj.equalsIgnoreCase("no autorizado para usar ia")) {
-
-                        if(matPass.getVisibility() == View.GONE){
-                            showMessageCard("Ingrese contraseña", "N");
-                            matPass.setVisibility(View.VISIBLE);
-                        } else {
-                            uploadData();
-                        }
-                    } else if (msj.equalsIgnoreCase("Numero de empleado no registrado")) {
+                    if (msj.equalsIgnoreCase("Numero de empleado no registrado")) {
+                        showMessageCard(msj, "E");
+                    } else if (msj.equalsIgnoreCase("empleado no enrrolado en ia")) {
                         showMessageCard(msj, "E");
                     } else if (msj.equalsIgnoreCase("error")) {
                         alertaNoIA();
@@ -488,6 +483,65 @@ public class Login extends AppCompatActivity {
                             uploadData();
                         }
                     }
+
+                    loading.dismiss();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+//                showMessageCard("Error: Verifique su conexion a internet", "E");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                alertaNoIA();
+            }
+
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jor);
+
+    }
+
+    private void verifyIa() {
+        final ProgressDialog loading = ProgressDialog.show(this, "Un momento...", "por favor espere...", false, false);
+
+//        Convertir bits a cadena
+        //bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
+        //String imagen = getStringImagen(bitmap);
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("apikey", str_apikey);
+        map.put("enroll_id", str_code);
+
+
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, VERIFY_IA, new JSONObject(map), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject jsondata = new JSONObject(response.getString("viewVars"));
+                    String msj = jsondata.getString("message");
+//                    Toast.makeText(getApplicationContext(), msj, Toast.LENGTH_LONG).show();
+
+                    if (msj.equalsIgnoreCase("Numero de empleado no registrado")) {
+                        showMessageCard(msj, "E");
+                    } else if (msj.equalsIgnoreCase("empleado inactivo")) {
+                        showMessageCard("Empleado inactivo", "E");
+                   } else if (msj.equalsIgnoreCase("no autorizado")){
+                        if(matPass.getVisibility() == View.GONE){
+                            showMessageCard("Ingrese contraseña", "N");
+                            matPass.setVisibility(View.VISIBLE);
+                        } else {
+                            uploadData();
+                        }
+                    } else if (msj.equalsIgnoreCase("autorizado")) {
+                        takePhoto();
+                    }
+
 
                     loading.dismiss();
 

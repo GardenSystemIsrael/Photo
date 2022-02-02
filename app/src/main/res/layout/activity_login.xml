@@ -108,6 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:inputType="number"
                     android:hint="Codigo">
 
                 </EditText>
@@ -163,7 +164,7 @@
                 android:background="@drawable/buttontest"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="Tomar asistencia"
+                android:text="Asistencia"
                 android:drawableLeft="@drawable/camera_24"
                 >
             </Button>
